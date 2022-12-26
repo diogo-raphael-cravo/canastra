@@ -1,12 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
-import Hand from './Hand';
-import CardBack from './CardBack';
-import Deck from './Deck';
-import Sequence from './Sequence';
-import Decks from './constants/Decks';
-import Joker from './Joker';
-import Card from './Card';
+import Hand from './cards/Hand';
+import CardBack from './cards/CardBack';
+import Deck from './cards/Deck';
+import Sequence from './cards/Sequence';
+import Joker from './cards/Joker';
+import Card from './cards/Card';
+import Decks from './cards/constants/Decks';
 import './App.css';
 
 const c = { name: 'J', suit: 'hearts' };

@@ -20,7 +20,7 @@ function Hand({ cards }: HandPropsType) {
 
     const howManyChildren = cards.length;
     if (howManyChildren > 13) {
-      const hands = [];
+      const hands: JSX.Element[] = [];
       let i;
       for (i = 1; i < (howManyChildren/13) + 1; i++) {
         hands.push((

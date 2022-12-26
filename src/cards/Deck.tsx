@@ -22,7 +22,7 @@ type DeckPropsType = {
 };
 function Deck ({ type, remainingCards }: DeckPropsType) {
     function makeChildren(): JSX.Element[] {
-      const children = [];
+      const children: JSX.Element[] = [];
       for (let i = 0; i < Math.floor(remainingCards.length / 10); i++) {
         children.push((<Card className=""/>));
       }

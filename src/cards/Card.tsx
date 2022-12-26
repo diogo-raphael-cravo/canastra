@@ -6,7 +6,6 @@ import CardSuit from './CardSuit';
 import Joker from './Joker';
 
 import CardNames from './constants/CardNames';
-import CardSuits from './constants/CardSuits';
 
 function makeAce(suit: string) {
     return (
