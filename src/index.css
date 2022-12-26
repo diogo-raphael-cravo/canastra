@@ -1,0 +1,48 @@
+html, body, #root {
+  min-height: 100%;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  flex: 1;
+}
+
+body {
+  font-family: 'sans';
+  min-height: 100%;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+.row {
+  flex-direction: row;
+}
+.col {
+  flex-direction: column;
+}
+.red {
+  color:#AA7777;
+}
+.black {
+  color:#555555;
+}
+.violet {
+  color:#7777AA;
+}
+.vertical-center {
+  display: flex;
+  margin: auto 0;
+}
+.horizontal-center {
+  display: flex;
+  margin: 0 auto;
+}
+.center {
+  margin: auto;
+}
+.flex-full {
+  display: flex;
+  flex: 1;
+}
+.flex {
+  display: flex;
+}

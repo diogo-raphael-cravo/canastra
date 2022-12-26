@@ -1,0 +1,21 @@
+.card-back {
+    margin: 10px;
+    width:105px;
+    height:147px;
+    border-radius: 12px;
+    box-shadow: 1px 1px 6px rgba(0,0,0,0.25);
+    color:#555555;
+    display: flex;
+    background: antiquewhite;
+    user-select: none;
+}
+.card-back-image {
+    flex: 1;
+    display: flex;
+    height: 50px;
+    width: 50px;
+    animation: App-logo-spin infinite 20s linear;
+}
+.card-back:hover {
+    background-color: floralwhite;
+}

@@ -1,0 +1,38 @@
+.card {
+    margin: 10px;
+    width:105px;
+    height:147px;
+    background:antiquewhite;
+    border-radius: 12px;
+    box-shadow: 1px 1px 6px rgba(0,0,0,0.25);
+    color:#555555;
+    display: flex;
+    user-select: none;
+    cursor: pointer;
+}
+.card:hover {
+    background-color: floralwhite;
+}
+.ace-content {
+    font-size:34px;
+    font-weight:bold;
+    display: flex;
+    margin: auto;
+}
+.number-content {
+    font-size:16px;
+    font-weight:bold;
+    display: flex;
+    flex: 1;
+    margin: 17px 0 17px 0;
+}
+.number-group {
+    margin: 0 auto;
+    font-size:16px;
+    flex: 1;
+    display: flex;
+}
+.number-group>.upside-down {
+    transform-origin: 50% 50%;
+    transform: rotate(180deg);
+}

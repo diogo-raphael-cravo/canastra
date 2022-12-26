@@ -1,0 +1,14 @@
+.sequence {
+    display: flex;
+    flex-direction: column;
+}
+.sequence>.card {
+    transform: rotate(0deg);
+}
+.sequence>.card:not(:first-child) {
+    margin-top: -112px;
+}
+
+.sequence.empty>.card {
+    background-color: white;
+}

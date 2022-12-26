@@ -1,0 +1,15 @@
+.deck {
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+}
+.deck>.card-back:not(:first-child) {
+    margin-left: -100px;
+}
+.deck>.card:not(:first-child) {
+    margin-left: -100px;
+}
+
+.deck.empty>.card {
+    background-color: white;
+}

@@ -1,0 +1,121 @@
+.hand {
+    display: flex;
+    width: 100%;
+}
+.hand>.card {
+    margin: 25px 0 0 25px;
+}
+.hand>.card:not(:first-child) {
+    margin-left: -90px;
+}
+.big-hand {
+    display: flex;
+    flex-direction: column;
+}
+.big-hand>.hand:not(:first-child) {
+    margin-top: -100px;
+}
+
+.hand-of-1>.card:nth-child(1) {  transform: rotate(0deg);  }
+
+.hand-of-2>.card:nth-child(1) {  transform: rotate(-11.5deg);  }
+.hand-of-2>.card:nth-child(2) {  transform: rotate(0deg);  }
+
+.hand-of-3>.card:nth-child(1) {  transform: rotate(-11.5deg); }
+.hand-of-3>.card:nth-child(2) {  transform: rotate(0deg); }
+.hand-of-3>.card:nth-child(3) {  transform: rotate(11.5deg); }
+
+.hand-of-4>.card:nth-child(1) {  transform: rotate(-22.5deg);  }
+.hand-of-4>.card:nth-child(2) {  transform: rotate(-11.25deg);  }
+.hand-of-4>.card:nth-child(3) {  transform: rotate(0deg);  }
+.hand-of-4>.card:nth-child(4) {  transform: rotate(11.25deg);  }
+
+.hand-of-5>.card:nth-child(1) {  transform: rotate(-22.5deg);  }
+.hand-of-5>.card:nth-child(2) {  transform: rotate(-13.25deg);  }
+.hand-of-5>.card:nth-child(3) {  transform: rotate(-4.5deg);  }
+.hand-of-5>.card:nth-child(4) {  transform: rotate(4.5deg);  }
+.hand-of-5>.card:nth-child(5) {  transform: rotate(13.5deg);  }
+
+.hand-of-6>.card:nth-child(1) {  transform: rotate(-22.5deg);  }
+.hand-of-6>.card:nth-child(2) {  transform: rotate(-15deg);  }
+.hand-of-6>.card:nth-child(3) {  transform: rotate(-7.5deg);  }
+.hand-of-6>.card:nth-child(4) {  transform: rotate(0deg);  }
+.hand-of-6>.card:nth-child(5) {  transform: rotate(7.5deg);  }
+.hand-of-6>.card:nth-child(6) {  transform: rotate(15deg);  }
+
+.hand-of-7>.card:nth-child(1) {  transform: rotate(-22.5deg);  }
+.hand-of-7>.card:nth-child(2) {  transform: rotate(-16.07deg);  }
+.hand-of-7>.card:nth-child(3) {  transform: rotate(-9.64deg);  }
+.hand-of-7>.card:nth-child(4) {  transform: rotate(-3.21deg);  }
+.hand-of-7>.card:nth-child(5) {  transform: rotate(3.21deg);  }
+.hand-of-7>.card:nth-child(6) {  transform: rotate(9.64deg);  }
+.hand-of-7>.card:nth-child(7) {  transform: rotate(16.07deg);  }
+
+.hand-of-8>.card:nth-child(1) {  transform: rotate(-22.5deg);  }
+.hand-of-8>.card:nth-child(2) {  transform: rotate(-16.875deg);  }
+.hand-of-8>.card:nth-child(3) {  transform: rotate(-11.25deg);  }
+.hand-of-8>.card:nth-child(4) {  transform: rotate(-5.625deg);  }
+.hand-of-8>.card:nth-child(5) {  transform: rotate(0deg);  }
+.hand-of-8>.card:nth-child(6) {  transform: rotate(5.625deg);  }
+.hand-of-8>.card:nth-child(7) {  transform: rotate(11.25deg);  }
+.hand-of-8>.card:nth-child(8) {  transform: rotate(16.875deg);  }
+
+.hand-of-9>.card:nth-child(1) {  transform: rotate(-22.5deg);  }
+.hand-of-9>.card:nth-child(2) {  transform: rotate(-17.5deg);  }
+.hand-of-9>.card:nth-child(3) {  transform: rotate(-12.5deg);  }
+.hand-of-9>.card:nth-child(4) {  transform: rotate(-7.5deg);  }
+.hand-of-9>.card:nth-child(5) {  transform: rotate(-2.5deg);  }
+.hand-of-9>.card:nth-child(6) {  transform: rotate(2.5deg);  }
+.hand-of-9>.card:nth-child(7) {  transform: rotate(7.5deg);  }
+.hand-of-9>.card:nth-child(8) {  transform: rotate(12.5deg);  }
+.hand-of-9>.card:nth-child(9) {  transform: rotate(17.5deg);  }
+
+.hand-of-10>.card:nth-child(1) {  transform: rotate(-22.5deg);  }
+.hand-of-10>.card:nth-child(2) {  transform: rotate(-18deg);  }
+.hand-of-10>.card:nth-child(3) {  transform: rotate(-13.5deg);  }
+.hand-of-10>.card:nth-child(4) {  transform: rotate(-9deg);  }
+.hand-of-10>.card:nth-child(5) {  transform: rotate(-4.5deg);  }
+.hand-of-10>.card:nth-child(6) {  transform: rotate(0deg);  }
+.hand-of-10>.card:nth-child(7) {  transform: rotate(4.5deg);  }
+.hand-of-10>.card:nth-child(8) {  transform: rotate(9deg);  }
+.hand-of-10>.card:nth-child(9) {  transform: rotate(13.5deg);  }
+.hand-of-10>.card:nth-child(10) {  transform: rotate(18deg);  }
+
+.hand-of-11>.card:nth-child(1) {  transform: rotate(-22.5deg);  }
+.hand-of-11>.card:nth-child(2) {  transform: rotate(-18.41deg);  }
+.hand-of-11>.card:nth-child(3) {  transform: rotate(-14.32deg);  }
+.hand-of-11>.card:nth-child(4) {  transform: rotate(-10.22deg);  }
+.hand-of-11>.card:nth-child(5) {  transform: rotate(-6.14deg);  }
+.hand-of-11>.card:nth-child(6) {  transform: rotate(-2.04deg);  }
+.hand-of-11>.card:nth-child(7) {  transform: rotate(2.04deg);  }
+.hand-of-11>.card:nth-child(8) {  transform: rotate(6.14deg);  }
+.hand-of-11>.card:nth-child(9) {  transform: rotate(10.22deg);  }
+.hand-of-11>.card:nth-child(10) {  transform: rotate(14.32deg);  }
+.hand-of-11>.card:nth-child(11) {  transform: rotate(18.41deg);  }
+
+.hand-of-12>.card:nth-child(1) {  transform: rotate(-22.5deg);  }
+.hand-of-12>.card:nth-child(2) {  transform: rotate(-18.75deg);  }
+.hand-of-12>.card:nth-child(3) {  transform: rotate(-15deg);  }
+.hand-of-12>.card:nth-child(4) {  transform: rotate(-11.25deg);  }
+.hand-of-12>.card:nth-child(5) {  transform: rotate(-7.5deg);  }
+.hand-of-12>.card:nth-child(6) {  transform: rotate(-3.75deg);  }
+.hand-of-12>.card:nth-child(7) {  transform: rotate(0deg);  }
+.hand-of-12>.card:nth-child(8) {  transform: rotate(3.75deg);  }
+.hand-of-12>.card:nth-child(9) {  transform: rotate(7.5deg);  }
+.hand-of-12>.card:nth-child(10) {  transform: rotate(11.25deg);  }
+.hand-of-12>.card:nth-child(11) {  transform: rotate(15deg);  }
+.hand-of-12>.card:nth-child(12) {  transform: rotate(18.75deg);  }
+
+.hand-of-13>.card:nth-child(1) {  transform: rotate(-22.5deg);  }
+.hand-of-13>.card:nth-child(2) {  transform: rotate(-19.04deg);  }
+.hand-of-13>.card:nth-child(3) {  transform: rotate(-15.58deg);  }
+.hand-of-13>.card:nth-child(4) {  transform: rotate(-12.11deg);  }
+.hand-of-13>.card:nth-child(5) {  transform: rotate(-8.65deg);  }
+.hand-of-13>.card:nth-child(6) {  transform: rotate(-5.19deg);  }
+.hand-of-13>.card:nth-child(7) {  transform: rotate(-1.73deg);  }
+.hand-of-13>.card:nth-child(8) {  transform: rotate(1.73deg);  }
+.hand-of-13>.card:nth-child(9) {  transform: rotate(5.19deg);  }
+.hand-of-13>.card:nth-child(10) {  transform: rotate(8.65deg);  }
+.hand-of-13>.card:nth-child(11) {  transform: rotate(12.11deg);  }
+.hand-of-13>.card:nth-child(12) {  transform: rotate(15.58deg);  }
+.hand-of-13>.card:nth-child(13) {  transform: rotate(19.04deg);  }
