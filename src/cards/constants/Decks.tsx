@@ -4,6 +4,7 @@ import CardSuits from './CardSuits';
 export type CardType = {
     name: string,
     suit: string,
+    selectionColor?: string,
 };
 function makeCard(name: string, suit: string): CardType {
   return { name, suit };

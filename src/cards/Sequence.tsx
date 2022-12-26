@@ -8,7 +8,7 @@ type SequencePropsType = {
     cards: CardType[],
 };
 function makeCards(cards: CardType[]): JSX.Element[] {
-    return cards.map(card => <Card name={card.name} suit={card.suit} className=""/>);
+    return cards.map(card => <Card name={card.name} suit={card.suit} selectionColor={card.selectionColor} className=""/>);
 }
 function Sequence({ cards }: SequencePropsType) {
     if (cards.length === 0) {

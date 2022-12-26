@@ -13,14 +13,12 @@ const c = { name: 'J', suit: 'hearts' };
 function App() {
   return (
     <div className="App">
-      <Card name='JOKER' suit=''/>
-      <Sequence cards={Decks.REGULAR_DECK}/>
       <Deck type='REGULAR' remainingCards={[c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c]}/>
       <CardBack/>
       <Hand cards={[
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
+        { name: 'J', suit: 'hearts', selectionColor: 'lightgreen' },
+        { name: 'J', suit: 'hearts', selectionColor: 'lightred' },
+        { name: 'J', suit: 'hearts', selectionColor: 'lightblue' },
         { name: 'J', suit: 'hearts' },
         { name: 'J', suit: 'hearts' },
         { name: 'J', suit: 'hearts' },
