@@ -297,13 +297,14 @@ function makeJoker() {
 }
 
 type CardPropsType = {
+    id?: string,
     name?: string,
     suit?: string,
     selectionColor?: string,
     className?: string,
+    onClick?: Function,
 };
-function Card({ name, suit, selectionColor, className }: CardPropsType) {
-    
+function Card({ id, name, suit, selectionColor, className, onClick }: CardPropsType) {
     if (!name || (!suit && '' !== suit)) {
         return <div className={`card ${className}`}/>;
     }
@@ -324,8 +325,16 @@ function Card({ name, suit, selectionColor, className }: CardPropsType) {
     const isSomething = isAce || isN_2 || isN_3 || isN_4 || isN_5 || isN_6 || isN_7 || isN_8
       || isN_9 || isN_10 || isJack || isQueen || isKing || isJoker;
     let displayName = isJoker ? 'J' : name;
+
+    let onClickAttr: { onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void } = {};
+    if (onClick) {
+        onClickAttr.onClick = () => {
+            console.log('clicked '+id)
+            onClick(id);
+        }
+    }
     return <div className={`card ${className}`} style={selectionColor ? {backgroundColor: selectionColor} : {}}
-            //onClick={this.props.onClick}
+        {...onClickAttr}
         >
         {isSomething && <CardMark name={displayName} suit={suit} className=""/>}
         {(isKing || isQueen || isJack) && makeRoyal(name)}

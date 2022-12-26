@@ -10,7 +10,7 @@ import Decks from './cards/constants/Decks';
 import { useAppSelector, useAppDispatch } from './Hooks';
 import './App.css';
 
-import { setDeck, selectDeck, selectHand, pickCard } from './canastra/slices/GameSlice';
+import { setDeck, selectDeck, selectHand, pickCard, selectCardInHand } from './canastra/slices/GameSlice';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -26,7 +26,7 @@ function App() {
       <div onClick={() => dispatch(pickCard())}>
         <Deck type='REGULAR' remainingCards={cards}/>
       </div>
-      <Hand cards={hand}/>
+      <Hand cards={hand} onClickCard={(cardId: string) => dispatch(selectCardInHand({ cardId, selectionColor: 'lightblue' }))}/>
     </div>
   );
 }

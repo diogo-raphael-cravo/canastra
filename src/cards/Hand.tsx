@@ -6,11 +6,12 @@ import { CardType } from './constants/Decks';
 
 type HandPropsType = {
     cards: CardType[],
+    onClickCard?: Function,
 };
-function makeCards(cards: CardType[]): JSX.Element[] {
-    return cards.map(card => <Card name={card.name} suit={card.suit} selectionColor={card.selectionColor} className=""/>);
+function makeCards(cards: CardType[], onClickCard?: Function): JSX.Element[] {
+    return cards.map(card => <Card id={card.id} name={card.name} suit={card.suit} selectionColor={card.selectionColor} className="" onClick={onClickCard}/>);
 }
-function Hand({ cards }: HandPropsType) {
+function Hand({ cards, onClickCard }: HandPropsType) {
     const isEmpty = !cards || 0 === cards.length;
     if (isEmpty) {
       return (
@@ -37,7 +38,7 @@ function Hand({ cards }: HandPropsType) {
     }
 
     return (
-      <div className={`hand hand-of-${howManyChildren}`}>{makeCards(cards)}</div>
+      <div className={`hand hand-of-${howManyChildren}`}>{makeCards(cards, onClickCard)}</div>
     );
 }
 
