@@ -11,7 +11,6 @@ function CardSuit({ suit, className }: CardSuitPropsType) {
     const isClubs = CardSuits.isClubs(suit);
     const isSpades = CardSuits.isSpades(suit);
     const isDiamonds = CardSuits.isDiamonds(suit);
-    const isJoker = CardSuits.isJoker(suit);
 
     if (isHearts) {
         return (<div className={`red suit ${className}`}>&hearts;</div>);
@@ -21,8 +20,6 @@ function CardSuit({ suit, className }: CardSuitPropsType) {
         return (<div className={`black suit ${className}`}>&spades;</div>);
     } else if (isDiamonds) {
         return (<div className={`red suit ${className}`}>&diams;</div>);
-    } else if (isJoker) {
-        return (<div className="violet">&#x2605;</div>);
     }
     return <div/>;
 }

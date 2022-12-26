@@ -5,12 +5,15 @@ import CardBack from './CardBack';
 import Deck from './Deck';
 import Sequence from './Sequence';
 import Decks from './constants/Decks';
+import Joker from './Joker';
+import Card from './Card';
 import './App.css';
 
 const c = { name: 'J', suit: 'hearts' };
 function App() {
   return (
     <div className="App">
+      <Card name='JOKER' suit=''/>
       <Sequence cards={Decks.REGULAR_DECK}/>
       <Deck type='REGULAR' remainingCards={[c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c]}/>
       <CardBack/>

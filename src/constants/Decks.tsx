@@ -25,7 +25,7 @@ function knuthShuffle<T>(array: T[]) {
 const REGULAR_DECK = CardSuits.ALL_SUITS
   .reduce((accum: CardType[], suit: string) =>
     accum.concat(CardNames.ALL_IN_A_SUIT.map(name => makeCard(name, suit))), [])
-  .concat([makeCard(CardNames.JOKER, CardSuits.JOKER), makeCard(CardNames.JOKER, CardSuits.JOKER)]);
+  .concat([makeCard(CardNames.JOKER, ''), makeCard(CardNames.JOKER, '')]);
 
 class Decks {
   static sort(cardA: CardType, cardB: CardType): number {

@@ -304,7 +304,7 @@ type CardPropsType = {
 };
 function Card({ name, suit, className }: CardPropsType) {
     
-    if (!name || !suit) {
+    if (!name || (!suit && '' !== suit)) {
         return <div className={`card ${className}`}/>;
     }
     const isAce = CardNames.isAce(name);
@@ -323,10 +323,11 @@ function Card({ name, suit, className }: CardPropsType) {
     const isJoker = CardNames.isJoker(name);
     const isSomething = isAce || isN_2 || isN_3 || isN_4 || isN_5 || isN_6 || isN_7 || isN_8
       || isN_9 || isN_10 || isJack || isQueen || isKing || isJoker;
+    let displayName = isJoker ? 'J' : name;
     return <div className={`card ${className}`}
             //onClick={this.props.onClick}
         >
-        {isSomething && <CardMark name={name} suit={suit} className=""/>}
+        {isSomething && <CardMark name={displayName} suit={suit} className=""/>}
         {(isKing || isQueen || isJack) && makeRoyal(name)}
         {isAce && makeAce(suit)}
         {isJoker && makeJoker()}
@@ -339,7 +340,7 @@ function Card({ name, suit, className }: CardPropsType) {
         {isN_8 && makeN_8(suit)}
         {isN_9 && makeN_9(suit)}
         {isN_10 && makeN_10(suit)}
-        {isSomething && <CardMark name={name} suit={suit} className="upside-down"/>}
+        {isSomething && <CardMark name={displayName} suit={suit} className="upside-down"/>}
     </div>
 }
 
