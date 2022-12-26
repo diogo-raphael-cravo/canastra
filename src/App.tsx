@@ -7,34 +7,26 @@ import Sequence from './cards/Sequence';
 import Joker from './cards/Joker';
 import Card from './cards/Card';
 import Decks from './cards/constants/Decks';
+import { useAppSelector, useAppDispatch } from './Hooks';
 import './App.css';
 
-const c = { name: 'J', suit: 'hearts' };
+import { setDeck, selectDeck, selectHand, pickCard } from './canastra/slices/GameSlice';
+
 function App() {
+  const dispatch = useAppDispatch();
+
+  const cards = useAppSelector(selectDeck);
+  const hand = useAppSelector(selectHand);
+  if (0 === cards.length) {
+    dispatch(setDeck(Decks.SHUFFLED_DECK));
+  }
+
   return (
     <div className="App">
-      <Deck type='REGULAR' remainingCards={[c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c]}/>
-      <CardBack/>
-      <Hand cards={[
-        { name: 'J', suit: 'hearts', selectionColor: 'lightgreen' },
-        { name: 'J', suit: 'hearts', selectionColor: 'lightred' },
-        { name: 'J', suit: 'hearts', selectionColor: 'lightblue' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-        { name: 'J', suit: 'hearts' },
-      ]}/>
+      <div onClick={() => dispatch(pickCard())}>
+        <Deck type='REGULAR' remainingCards={cards}/>
+      </div>
+      <Hand cards={hand}/>
     </div>
   );
 }
