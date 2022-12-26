@@ -1,12 +1,16 @@
-import CardNames from './card-names';
-import CardSuits from './card-suits';
+import CardNames from './CardNames';
+import CardSuits from './CardSuits';
 
-function makeCard(name, suit) {
+export type CardType = {
+    name: string,
+    suit: string,
+};
+function makeCard(name: string, suit: string): CardType {
   return { name, suit };
 }
 
 // source: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-function knuthShuffle(array) {
+function knuthShuffle<T>(array: T[]) {
   let currentIndex = array.length, temporaryValue, randomIndex;
   while (0 !== currentIndex) {
     randomIndex = Math.floor(Math.random() * currentIndex);
@@ -19,12 +23,12 @@ function knuthShuffle(array) {
 }
 
 const REGULAR_DECK = CardSuits.ALL_SUITS
-  .reduce((accum, suit) =>
+  .reduce((accum: CardType[], suit: string) =>
     accum.concat(CardNames.ALL_IN_A_SUIT.map(name => makeCard(name, suit))), [])
-  .concat([makeCard(CardNames.JOKER), makeCard(CardNames.JOKER)]);
+  .concat([makeCard(CardNames.JOKER, CardSuits.JOKER), makeCard(CardNames.JOKER, CardSuits.JOKER)]);
 
 class Decks {
-  static sort(cardA, cardB) {
+  static sort(cardA: CardType, cardB: CardType): number {
     const suitSort = CardSuits.sort(cardA.suit, cardB.suit);
     if (suitSort !== 0) {
       return suitSort;
