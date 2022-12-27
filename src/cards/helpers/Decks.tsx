@@ -2,6 +2,24 @@ import CardNames from './CardNames';
 import CardSuits from './CardSuits';
 import { v4 } from 'uuid';
 
+export function isTriple(cards: CardType[]): boolean {
+  const withoutJoker = cards.filter(card => !CardNames.isJoker(card.name));
+  return 3 <= cards.length &&
+    withoutJoker.every(card => (card.name === withoutJoker[0].name) || CardNames.isJoker(card.name));
+}
+export function isSequence(cards: CardType[]): boolean {
+  const sortedCards: CardType[] = [...cards];
+  sortedCards.sort(Decks.sort);
+  const sortedWithoutJoker = sortedCards.filter(card => !CardNames.isJoker(card.name));
+  return 3 <= cards.length &&
+    sortedWithoutJoker.every(card => card.suit === sortedWithoutJoker[0].suit) &&
+    sortedWithoutJoker.every((card, index) => {
+      if (0 === index) {
+        return true;
+      }
+      return CardNames.isNext(sortedWithoutJoker[index - 1].name, card.name);
+    });
+}
 export type CardType = {
     id: string,
     name: string,

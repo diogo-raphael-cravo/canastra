@@ -5,7 +5,7 @@ import CardMark from './CardMark';
 import CardSuit from './CardSuit';
 import Joker from './Joker';
 
-import CardNames from './constants/CardNames';
+import CardNames from './helpers/CardNames';
 
 function makeAce(suit: string) {
     return (
@@ -301,12 +301,11 @@ type CardPropsType = {
     name?: string,
     suit?: string,
     selectionColor?: string,
-    className?: string,
     onClick?: Function,
 };
-function Card({ id, name, suit, selectionColor, className, onClick }: CardPropsType) {
+function Card({ id, name, suit, selectionColor, onClick }: CardPropsType) {
     if (!name || (!suit && '' !== suit)) {
-        return <div className={`card ${className}`}/>;
+        return <div className={'card'} style={selectionColor ? {backgroundColor: selectionColor} : {}}/>;
     }
     const isAce = CardNames.isAce(name);
     const isN_2 = CardNames.isN_2(name);
@@ -329,11 +328,10 @@ function Card({ id, name, suit, selectionColor, className, onClick }: CardPropsT
     let onClickAttr: { onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void } = {};
     if (onClick) {
         onClickAttr.onClick = () => {
-            console.log('clicked '+id)
             onClick(id);
         }
     }
-    return <div className={`card ${className}`} style={selectionColor ? {backgroundColor: selectionColor} : {}}
+    return <div className={'card'} style={selectionColor ? {backgroundColor: selectionColor} : {}}
         {...onClickAttr}
         >
         {isSomething && <CardMark name={displayName} suit={suit} className=""/>}

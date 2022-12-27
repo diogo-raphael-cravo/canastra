@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CardSuits from './constants/CardSuits';
+import CardSuits from './helpers/CardSuits';
 
 type CardSuitPropsType = {
     suit: string,

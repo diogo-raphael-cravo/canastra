@@ -3,7 +3,7 @@ import './style/Deck.css';
 
 import CardBack from './CardBack';
 import Card from './Card';
-import { CardType } from './constants/Decks';
+import { CardType } from './helpers/Decks';
 
 class DeckClass {
   static get REGULAR() { return "REGULAR" }
@@ -24,7 +24,7 @@ function Deck ({ type, remainingCards }: DeckPropsType) {
     function makeChildren(): JSX.Element[] {
       const children: JSX.Element[] = [];
       for (let i = 0; i < Math.floor(remainingCards.length / 10); i++) {
-        children.push((<Card className=""/>));
+        children.push((<Card/>));
       }
       return children;
     }

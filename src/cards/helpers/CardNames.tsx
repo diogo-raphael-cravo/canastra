@@ -6,6 +6,11 @@ class CardNames {
     static get ALL() {
       return CardNames.ALL_IN_A_SUIT.concat([CardNames.JOKER]);
     }
+    static isNext(first: string, possibleNext: string): boolean {
+      const indexFirst = CardNames.ALL.findIndex(name => name === first);
+      const indexPossibleNext = CardNames.ALL.findIndex(name => name === possibleNext);
+      return indexPossibleNext - indexFirst === 1;
+    }
     static get ALL_IN_A_SUIT() {
       return [
         CardNames.ACE,

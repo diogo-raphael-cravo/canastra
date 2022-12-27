@@ -6,19 +6,20 @@ import Deck from './cards/Deck';
 import Sequence from './cards/Sequence';
 import Joker from './cards/Joker';
 import Card from './cards/Card';
-import Decks from './cards/constants/Decks';
+import Decks from './cards/helpers/Decks';
 import { useAppSelector, useAppDispatch } from './Hooks';
 import './App.css';
 
-import { setDeck, selectDeck, selectHand, pickCard, selectCardInHand } from './canastra/slices/GameSlice';
+import { setDeck, selectDeck, selectHand, pickCard, selectCardInHand, selectSequences } from './canastra/slices/GameSlice';
 
 function App() {
   const dispatch = useAppDispatch();
 
   const cards = useAppSelector(selectDeck);
   const hand = useAppSelector(selectHand);
+  const sequences = useAppSelector(selectSequences);
   if (0 === cards.length) {
-    dispatch(setDeck(Decks.SHUFFLED_DECK));
+    dispatch(setDeck(Decks.REGULAR_DECK));
   }
 
   return (
@@ -26,7 +27,8 @@ function App() {
       <div onClick={() => dispatch(pickCard())}>
         <Deck type='REGULAR' remainingCards={cards}/>
       </div>
-      <Hand cards={hand} onClickCard={(cardId: string) => dispatch(selectCardInHand({ cardId, selectionColor: 'lightblue' }))}/>
+      {sequences.map(sequence => <Sequence cards={sequence.cards} selectionColor={sequence.selectionColor}/>)}
+      <Hand cards={hand} onClickCard={(cardId: string) => dispatch(selectCardInHand(cardId))}/>
     </div>
   );
 }
