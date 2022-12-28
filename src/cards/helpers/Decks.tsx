@@ -3,22 +3,74 @@ import CardSuits from './CardSuits';
 import { v4 } from 'uuid';
 
 export function isTriple(cards: CardType[]): boolean {
+  if (cards.length < 3) {
+    return false;
+  }
   const withoutJoker = cards.filter(card => !CardNames.isJoker(card.name));
-  return 3 <= cards.length &&
-    withoutJoker.every(card => (card.name === withoutJoker[0].name) || CardNames.isJoker(card.name));
+  const jokerCount = cards.length - withoutJoker.length;
+  if (1 < jokerCount) {
+    return false;
+  }
+  if (withoutJoker.every(card => card.name === withoutJoker[0].name)) {
+    return true;
+  }
+  const without2 = cards.filter(card => !CardNames.isN_2(card.name));
+  const hasOne2 = cards.length - without2.length === 1;
+  if (0 === jokerCount && hasOne2) {
+    return without2.every(card => card.name === without2[0].name);
+  }
+  return false;
+}
+
+function isSortedArraySequenceHappyPath(cards: CardType[], hasJoker: boolean): boolean {
+  let usedJoker = !hasJoker;
+  return cards.every((card, index) => {
+    if (0 === index) {
+      return true;
+    }
+    const previous = cards[index - 1].name;
+    const current = card.name;
+    if (CardNames.isNext(previous, current)) {
+      return true;
+    }
+    if (2 === CardNames.getDistance(previous, current) && !usedJoker) {
+      usedJoker = true;
+      return true;
+    }
+    return false;
+  });
+}
+function isSortedArraySequence(cards: CardType[], hasJoker: boolean): boolean {
+  if (!cards.every(card => card.suit === cards[0].suit)) {
+    return false;
+  }
+  if (CardNames.isAce(cards[0].name)) {
+    const cardsWithAceLast = [...cards.slice(1), cards[0]];
+    const aceAs14Works = isSortedArraySequenceHappyPath(cardsWithAceLast, hasJoker);
+    if (aceAs14Works) {
+      return true;
+    }
+  }
+  return isSortedArraySequenceHappyPath(cards, hasJoker);
 }
 export function isSequence(cards: CardType[]): boolean {
   const sortedCards: CardType[] = [...cards];
   sortedCards.sort(Decks.sort);
   const sortedWithoutJoker = sortedCards.filter(card => !CardNames.isJoker(card.name));
-  return 3 <= cards.length &&
-    sortedWithoutJoker.every(card => card.suit === sortedWithoutJoker[0].suit) &&
-    sortedWithoutJoker.every((card, index) => {
-      if (0 === index) {
-        return true;
-      }
-      return CardNames.isNext(sortedWithoutJoker[index - 1].name, card.name);
-    });
+  const hasJoker = sortedWithoutJoker.length < sortedCards.length;
+  if (cards.length < 3) {
+    return false;
+  }
+  if (isSortedArraySequence(sortedWithoutJoker, hasJoker)) {
+    return true;
+  }
+  return !hasJoker && sortedCards.some(thisCard => {
+    if (!CardNames.isN_2(thisCard.name)) {
+      return false;
+    }
+    const sortedCardsWithoutThisCard = sortedCards.filter(card => card.id !== thisCard.id);
+    return isSortedArraySequence(sortedCardsWithoutThisCard, true);
+  });
 }
 export type CardType = {
     id: string,

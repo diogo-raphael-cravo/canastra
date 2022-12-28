@@ -7,9 +7,20 @@ class CardNames {
       return CardNames.ALL_IN_A_SUIT.concat([CardNames.JOKER]);
     }
     static isNext(first: string, possibleNext: string): boolean {
+      return CardNames.getDistance(first, possibleNext) === 1;
+    }
+    static getDistance(first: string, possibleNext: string): number {
+      if (CardNames.isAce(possibleNext)) {
+        if (CardNames.isQueen(first)) {
+          return 2;
+        }
+        if (CardNames.isKing(first)) {
+          return 1;
+        }
+      }
       const indexFirst = CardNames.ALL.findIndex(name => name === first);
       const indexPossibleNext = CardNames.ALL.findIndex(name => name === possibleNext);
-      return indexPossibleNext - indexFirst === 1;
+      return indexPossibleNext - indexFirst;
     }
     static get ALL_IN_A_SUIT() {
       return [
