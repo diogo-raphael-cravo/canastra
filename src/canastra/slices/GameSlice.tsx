@@ -34,7 +34,7 @@ function getEmptySequence(sequences: SequenceType[]): SequenceType {
     return sequences[sequences.length - 1];
 }
 
-type HandMovementType = {
+export type HandMovementType = {
     sequenceId: string,
     cardId: string,
 };

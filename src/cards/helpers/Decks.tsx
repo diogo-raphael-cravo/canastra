@@ -47,6 +47,15 @@ function getSortedArraySequenceHappyPath(cards: CardType[], jokerCard?: CardType
     return false;
   });
   if (sequencePossible) {
+    if (jokerCard && !usedJoker) {
+      if (CardNames.isAce(sequenceCards[sequenceCards.length - 1].name)) {
+        // @ts-ignore
+        sequenceCards.unshift(jokerCard);
+      } else {
+        // @ts-ignore
+        sequenceCards.push(jokerCard);
+      }
+    }
     return sequenceCards;
   }
   return null;
