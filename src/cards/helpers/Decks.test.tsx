@@ -584,6 +584,56 @@ describe('isSequence', () => {
             
             expect(isSequence(cards)).toBeTruthy();
         });
+        test('moves joker to a different position (lower to upper)', () => {
+            const cards: CardType[] = [{
+                id: 'a',
+                name: '7',
+                suit: 'hearts',
+            }, {
+                id: 'b',
+                name: 'JOKER',
+                suit: '',
+            }, {
+                id: 'c',
+                name: '3',
+                suit: 'hearts',
+            }, {
+                id: 'd',
+                name: '4',
+                suit: 'hearts',
+            }, {
+                id: 'e',
+                name: '5',
+                suit: 'hearts',
+            }];
+            
+            expect(isSequence(cards)).toBeTruthy();
+        });
+        test('moves joker to a different position (upper to lower)', () => {
+            const cards: CardType[] = [{
+                id: 'a',
+                name: 'A',
+                suit: 'hearts',
+            }, {
+                id: 'b',
+                name: '3',
+                suit: 'hearts',
+            }, {
+                id: 'c',
+                name: '4',
+                suit: 'hearts',
+            }, {
+                id: 'd',
+                name: '5',
+                suit: 'hearts',
+            }, {
+                id: 'e',
+                name: 'JOKER',
+                suit: '',
+            }];
+            
+            expect(isSequence(cards)).toBeTruthy();
+        });
     });
     describe('is not a sequence', () => {
         test('an empty list', () => {

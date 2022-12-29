@@ -28,7 +28,7 @@ function App() {
         <Deck type='REGULAR' remainingCards={cards}/>
       </div>
       {sequences.map(sequence => <Sequence key={sequence.id} id={sequence.id} cards={sequence.cards} selectionColor={sequence.selectionColor}
-        onClick={(sequenceId: string) => dispatch(moveSelectedHandToSequence(sequenceId))}/>)}
+        onClick={(sequenceId: string) => dispatch(moveSelectedHandToSequence({ sequenceId, cardId: '' }))}/>)}
       <Hand cards={hand} onClickCard={(cardId: string) => dispatch(selectCardInHand(cardId))}/>
     </div>
   );

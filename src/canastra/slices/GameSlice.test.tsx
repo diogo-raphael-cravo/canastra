@@ -884,7 +884,7 @@ describe('moveSelectedHandToSequence', () => {
             hand: [],
         };
         
-        expect(() => reducer(previousState, moveSelectedHandToSequence('notavailable')))
+        expect(() => reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'notavailable', cardId: '' })))
             .toThrow('could not find sequence notavailable');
     });
     test('should do nothing when selected cards are neither a sequence nor triple', () => {
@@ -918,7 +918,7 @@ describe('moveSelectedHandToSequence', () => {
             }],
         };
         
-        expect(reducer(previousState, moveSelectedHandToSequence('mockid'))).toEqual({
+        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'mockid', cardId: '' }))).toEqual({
             deck: [],
             sequences: [{
                 id: 'mockid',
@@ -980,7 +980,7 @@ describe('moveSelectedHandToSequence', () => {
             }],
         };
         
-        expect(reducer(previousState, moveSelectedHandToSequence('mockid'))).toEqual({
+        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'mockid', cardId: '' }))).toEqual({
             deck: [],
             sequences: [{
                 id: 'mockid',
@@ -1016,6 +1016,79 @@ describe('moveSelectedHandToSequence', () => {
             }],
         });
     });
+    test('should move a single card to a sequence of type triple', () => {
+        const previousState: GameSliceState = {
+            deck: [],
+            sequences: [{
+                id: 'tripleid',
+                type: 'triple',
+                cards: [{
+                    id: 'a',
+                    name: 'A',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'b',
+                    name: 'A',
+                    suit: 'diamonds',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'c',
+                    name: 'A',
+                    suit: 'cloves',
+                    selectionColor: 'lightgreen',
+                }],
+                selectionColor: '',
+            }, {
+                id: 'mockid',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            }],
+            hand: [{
+                id: 'd',
+                name: 'A',
+                suit: 'spades',
+                selectionColor: 'lightgreen',
+            }],
+        };
+        
+        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'tripleid', cardId: '' }))).toEqual({
+            deck: [],
+            sequences: [{
+                id: 'tripleid',
+                type: 'triple',
+                cards: [{
+                    id: 'a',
+                    name: 'A',
+                    suit: 'hearts',
+                    selectionColor: '',
+                }, {
+                    id: 'b',
+                    name: 'A',
+                    suit: 'diamonds',
+                    selectionColor: '',
+                }, {
+                    id: 'c',
+                    name: 'A',
+                    suit: 'cloves',
+                    selectionColor: '',
+                }, {
+                    id: 'd',
+                    name: 'A',
+                    suit: 'spades',
+                    selectionColor: '',
+                }],
+                selectionColor: '',
+            }, {
+                id: 'mockid',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            }],
+            hand: [],
+        });
+    });
     test('should set sequence type to sequence when moving sequence to empty sequence', () => {
         const previousState: GameSliceState = {
             deck: [],
@@ -1048,7 +1121,7 @@ describe('moveSelectedHandToSequence', () => {
             }],
         };
         
-        expect(reducer(previousState, moveSelectedHandToSequence('mockid'))).toEqual({
+        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'mockid', cardId: '' }))).toEqual({
             deck: [],
             sequences: [{
                 id: 'mockid',
@@ -1082,6 +1155,152 @@ describe('moveSelectedHandToSequence', () => {
                 suit: 'diamonds',
                 selectionColor: '',
             }],
+        });
+    });
+    test('should move a single card to a sequence of type sequence (upper bound)', () => {
+        const previousState: GameSliceState = {
+            deck: [],
+            sequences: [{
+                id: 'sequenceid',
+                type: 'sequence',
+                cards: [{
+                    id: 'a',
+                    name: 'A',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'b',
+                    name: '2',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'c',
+                    name: '3',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }],
+                selectionColor: '',
+            }, {
+                id: 'mockid',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            }],
+            hand: [{
+                id: 'd',
+                name: '4',
+                suit: 'hearts',
+                selectionColor: 'lightgreen',
+            }],
+        };
+        
+        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'sequenceid', cardId: '' }))).toEqual({
+            deck: [],
+            sequences: [{
+                id: 'sequenceid',
+                type: 'sequence',
+                cards: [{
+                    id: 'a',
+                    name: 'A',
+                    suit: 'hearts',
+                    selectionColor: '',
+                }, {
+                    id: 'b',
+                    name: '2',
+                    suit: 'hearts',
+                    selectionColor: '',
+                }, {
+                    id: 'c',
+                    name: '3',
+                    suit: 'hearts',
+                    selectionColor: '',
+                }, {
+                    id: 'd',
+                    name: '4',
+                    suit: 'hearts',
+                    selectionColor: '',
+                }],
+                selectionColor: '',
+            }, {
+                id: 'mockid',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            }],
+            hand: [],
+        });
+    });
+    test('should move a single card to a sequence of type sequence (lower bound)', () => {
+        const previousState: GameSliceState = {
+            deck: [],
+            sequences: [{
+                id: 'sequenceid',
+                type: 'sequence',
+                cards: [{
+                    id: 'a',
+                    name: '2',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'b',
+                    name: '3',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'c',
+                    name: '4',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }],
+                selectionColor: '',
+            }, {
+                id: 'mockid',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            }],
+            hand: [{
+                id: 'd',
+                name: 'A',
+                suit: 'hearts',
+                selectionColor: 'lightgreen',
+            }],
+        };
+        
+        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'sequenceid', cardId: '' }))).toEqual({
+            deck: [],
+            sequences: [{
+                id: 'sequenceid',
+                type: 'sequence',
+                cards: [{
+                    id: 'd',
+                    name: 'A',
+                    suit: 'hearts',
+                    selectionColor: '',
+                }, {
+                    id: 'a',
+                    name: '2',
+                    suit: 'hearts',
+                    selectionColor: '',
+                }, {
+                    id: 'b',
+                    name: '3',
+                    suit: 'hearts',
+                    selectionColor: '',
+                }, {
+                    id: 'c',
+                    name: '4',
+                    suit: 'hearts',
+                    selectionColor: '',
+                }],
+                selectionColor: '',
+            }, {
+                id: 'mockid',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            }],
+            hand: [],
         });
     });
 });

@@ -10,20 +10,28 @@ type SequencePropsType = {
     selectionColor: string,
     onClick?: Function,
 };
-function makeCards(cards: CardType[]): JSX.Element[] {
-    return cards.map(card => <Card name={card.name} suit={card.suit} selectionColor={card.selectionColor}/>);
+type OnClickAttrType = {
+    onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void,
+}
+function makeCards(cards: CardType[], onClickAttr: OnClickAttrType): JSX.Element[] {
+    return cards.map(card => <Card name={card.name} suit={card.suit} selectionColor={card.selectionColor} {...onClickAttr}/>);
 }
 function Sequence({ id, cards, selectionColor, onClick }: SequencePropsType) {
-    let onClickAttr: { onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void } = {};
-    if (onClick) {
-        onClickAttr.onClick = () => {
-            onClick(id);
-        }
-    }
+    let onClickAttr: OnClickAttrType = {};
     if (cards.length === 0) {
+        if (onClick) {
+            onClickAttr.onClick = () => {
+                onClick({ sequenceId: id, cardId: null });
+            }
+        }
         return (<div className={'sequence empty'} {...onClickAttr}><Card selectionColor={selectionColor}/></div>);
     }
-    return (<div className={'sequence'} {...onClickAttr}>{makeCards(cards)}</div>);
+    if (onClick) {
+        onClickAttr.onClick = (cardId) => {
+            onClick({ sequenceId: id, cardId });
+        }
+    }
+    return (<div className={'sequence'} >{makeCards(cards, onClickAttr)}</div>);
 }
 
 export default Sequence;

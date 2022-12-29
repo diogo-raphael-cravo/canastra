@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 } from 'uuid';
 
-import { CardType, isTriple, isSequence } from '../../cards/helpers/Decks'
+import { CardType, isTriple, isSequence, getSequence } from '../../cards/helpers/Decks'
 import type { RootState } from '../../Store';
 
 export const SEQUENCE_TYPE_ANY = 'any';
@@ -34,6 +34,10 @@ function getEmptySequence(sequences: SequenceType[]): SequenceType {
     return sequences[sequences.length - 1];
 }
 
+type HandMovementType = {
+    sequenceId: string,
+    cardId: string,
+};
 export const gameSlice = createSlice({
   name: 'gameSlice',
   // `createSlice` will infer the state type from the `initialState` argument
@@ -85,24 +89,41 @@ export const gameSlice = createSlice({
                 }
             }
             if (sequence.type === SEQUENCE_TYPE_SEQUENCE) {
-                if (isSequence([...selectedCards, sequence.cards[0], sequence.cards[1]])) {
-                    sequence.cards[0].selectionColor = 'lightgreen';
-                    selectedCards.forEach(card => { card.selectionColor = 'lightgreen' });
-                }
-                if (isSequence([...selectedCards, sequence.cards[sequence.cards.length - 1], sequence.cards[sequence.cards.length - 2]])) {
-                    sequence.cards[sequence.cards.length - 1].selectionColor = 'lightgreen';
-                    selectedCards.forEach(card => { card.selectionColor = 'lightgreen' });
+                if (1 === selectedCards.length) {
+                    if (isSequence([...selectedCards, sequence.cards[0], sequence.cards[1]])) {
+                        sequence.cards[0].selectionColor = 'lightgreen';
+                        selectedCards.forEach(card => { card.selectionColor = 'lightgreen' });
+                    }
+                    if (isSequence([...selectedCards, sequence.cards[sequence.cards.length - 1], sequence.cards[sequence.cards.length - 2]])) {
+                        sequence.cards[sequence.cards.length - 1].selectionColor = 'lightgreen';
+                        selectedCards.forEach(card => { card.selectionColor = 'lightgreen' });
+                    }
+                } else {
+                    if (isSequence([...selectedCards, sequence.cards[0]])) {
+                        sequence.cards[0].selectionColor = 'lightgreen';
+                        selectedCards.forEach(card => { card.selectionColor = 'lightgreen' });
+                    }
+                    if (isSequence([...selectedCards, sequence.cards[sequence.cards.length - 1]])) {
+                        sequence.cards[sequence.cards.length - 1].selectionColor = 'lightgreen';
+                        selectedCards.forEach(card => { card.selectionColor = 'lightgreen' });
+                    }
                 }
             }
         });
     },
-    moveSelectedHandToSequence: (state, action: PayloadAction<string>) => {
-        const selectedSequence = state.sequences.find(sequence => sequence.id === action.payload);
+    moveSelectedHandToSequence: (state, action: PayloadAction<HandMovementType>) => {
+        const selectedSequence = state.sequences.find(sequence => sequence.id === action.payload.sequenceId);
         if (!selectedSequence) {
-            throw new Error(`could not find sequence ${action.payload}`);
+            throw new Error(`could not find sequence ${action.payload.sequenceId}`);
         }
         const selectedCards = state.hand.filter(card => card.selectionColor);
-        if (!isTriple(selectedCards) && !isSequence(selectedCards)) {
+
+        if (!(isTriple([...selectedCards, ...selectedSequence.cards])
+                && (SEQUENCE_TYPE_TRIPLE === selectedSequence.type
+                    || SEQUENCE_TYPE_ANY === selectedSequence.type))
+            && !(isSequence([...selectedCards, ...selectedSequence.cards])
+                && (SEQUENCE_TYPE_SEQUENCE === selectedSequence.type
+                    || SEQUENCE_TYPE_ANY === selectedSequence.type))) {
             return;
         }
 
@@ -113,16 +134,23 @@ export const gameSlice = createSlice({
             if (isSequence(selectedCards)) {
                 selectedSequence.type = SEQUENCE_TYPE_SEQUENCE;
             }
+            state.sequences.push({
+                id: v4(),
+                type: SEQUENCE_TYPE_ANY,
+                cards: [],
+                selectionColor: '',
+            });
         }
+
         state.hand = state.hand.filter(card => !card.selectionColor);
         selectedSequence.cards.push(...selectedCards);
         selectedCards.forEach(card => { card.selectionColor = '' });
-        state.sequences.push({
-            id: v4(),
-            type: SEQUENCE_TYPE_ANY,
-            cards: [],
-            selectionColor: '',
-        });
+        selectedSequence.cards.forEach(card => { card.selectionColor = '' });
+
+        const sequenceOfCards = getSequence(selectedSequence.cards);
+        if (null !== sequenceOfCards) {
+            selectedSequence.cards = sequenceOfCards;
+        }
     }
   },
 })
