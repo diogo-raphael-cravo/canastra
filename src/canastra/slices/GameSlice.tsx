@@ -178,11 +178,12 @@ export const gameSlice = createSlice({
             return;
         }
         const discardedCard = selectedCards[0];
-        discardedCard.selectionColor = '';
-        state.discardPile.selectionColor = '';
         
         state.hand = state.hand.filter(card => !card.selectionColor);
         state.discardPile.cards.push(discardedCard);
+        
+        discardedCard.selectionColor = '';
+        state.discardPile.selectionColor = '';
     }
   },
 })

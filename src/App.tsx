@@ -37,8 +37,10 @@ function App() {
   return (
     <div className="App" style={{ display: 'flex', flex: 1 }}>
       <div className="col">
-        <div onClick={() => dispatch(pickCard())} className="row" style={{ display: 'flex' }}>
-          <Deck type='REGULAR' remainingCards={cards}/>
+        <div className="row" style={{ display: 'flex' }}>
+          <div onClick={() => dispatch(pickCard())} className="row" style={{ display: 'flex' }}>
+            <Deck type='REGULAR' remainingCards={cards}/>
+          </div>
           {discardPileJsx}
         </div>
         <div className="row" style={{ display: 'flex' }}>
@@ -47,7 +49,7 @@ function App() {
         </div>
         <Hand cards={hand} showBack={false} onClickCard={(cardId: string) => dispatch(selectCardInHand(cardId))}/>
       </div>
-      <div className="col" style={{ display: 'flex' }}>
+      <div className="col" style={{ display: 'flex', flex: 1 }}>
         <div style={{ display: 'flex', flexDirection: 'row-reverse', height: '100%' }}>
           <div className="col" style={{ display: 'flex', borderLeft: 10, borderLeftStyle: 'solid', width: 350 }}>
             <Hand cards={hand} showBack={true} onClickCard={(cardId: string) => dispatch(selectCardInHand(cardId))}/>
