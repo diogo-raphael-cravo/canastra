@@ -35,17 +35,26 @@ function App() {
       onClick={() => dispatch(discardCard())}/>;
   }
   return (
-    <div className="App">
-      <div onClick={() => dispatch(pickCard())} className="row" style={{ display: 'flex' }}>
-        <Deck type='REGULAR' remainingCards={cards}/>
-        {discardPileJsx}
+    <div className="App" style={{ display: 'flex', flex: 1 }}>
+      <div className="col">
+        <div onClick={() => dispatch(pickCard())} className="row" style={{ display: 'flex' }}>
+          <Deck type='REGULAR' remainingCards={cards}/>
+          {discardPileJsx}
+        </div>
+        <div className="row" style={{ display: 'flex' }}>
+          {sequences.map(sequence => <Sequence key={sequence.id} id={sequence.id} cards={sequence.cards} selectionColor={sequence.selectionColor}
+            onClick={(selectionObject: HandMovementType) => dispatch(moveSelectedHandToSequence(selectionObject))}/>)}
+        </div>
+        <Hand cards={hand} showBack={false} onClickCard={(cardId: string) => dispatch(selectCardInHand(cardId))}/>
       </div>
-      <div className="row" style={{ display: 'flex' }}>
-        {sequences.map(sequence => <Sequence key={sequence.id} id={sequence.id} cards={sequence.cards} selectionColor={sequence.selectionColor}
-          onClick={(selectionObject: HandMovementType) => dispatch(moveSelectedHandToSequence(selectionObject))}/>)}
+      <div className="col" style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', flexDirection: 'row-reverse', height: '100%' }}>
+          <div className="col" style={{ display: 'flex', borderLeft: 10, borderLeftStyle: 'solid', width: 350 }}>
+            <Hand cards={hand} showBack={true} onClickCard={(cardId: string) => dispatch(selectCardInHand(cardId))}/>
+          </div>
+        
+        </div>
       </div>
-      <Hand cards={hand} showBack={false} onClickCard={(cardId: string) => dispatch(selectCardInHand(cardId))}/>
-      <Hand cards={hand} showBack={true} onClickCard={(cardId: string) => dispatch(selectCardInHand(cardId))}/>
     </div>
   );
 }
