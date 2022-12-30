@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 } from 'uuid';
 
-import { CardType, isTriple, isSequence, getSequence } from '../../cards/helpers/Decks'
+import Decks, { CardType, isTriple, isSequence, getSequence } from '../../cards/helpers/Decks'
 import type { RootState } from '../../Store';
 
 export const SEQUENCE_TYPE_ANY = 'any';
@@ -17,6 +17,7 @@ export interface GameSliceState {
   deck: CardType[],
   sequences: SequenceType[],
   hand: CardType[],
+  discardPile: SequenceType,
 };
 
 const initialState: GameSliceState = {
@@ -28,6 +29,12 @@ const initialState: GameSliceState = {
         selectionColor: '',
     }],
     hand: [],
+    discardPile: {
+        id: v4(),
+        type: SEQUENCE_TYPE_ANY,
+        cards: [],
+        selectionColor: '',
+    },
 };
 
 function getEmptySequence(sequences: SequenceType[]): SequenceType {
@@ -43,6 +50,11 @@ export const gameSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    startGame: (state) => {
+        state.deck = [...Decks.SHUFFLED_DECK];
+        state.hand = state.deck.slice(0, 7);
+        state.deck = state.deck.slice(7, state.deck.length);
+    },
     setDeck: (state, action: PayloadAction<CardType[]>) => {
         state.deck = action.payload;
     },
@@ -54,6 +66,7 @@ export const gameSlice = createSlice({
         state.hand = [...state.hand, card];
         state.deck = state.deck.slice(0, state.deck.length - 1);
     },
+    // TODO: do not highlight when two joekrs
     selectCardInHand: (state, action: PayloadAction<string>) => {
         const card = state.hand.find(card => card.id === action.payload);
         if (!card) {
@@ -66,6 +79,13 @@ export const gameSlice = createSlice({
         }
 
         const selectedCards = state.hand.filter(card => card.selectionColor);
+
+        if (1 === selectedCards.length) {
+            state.discardPile.selectionColor = 'lightgreen';
+        } else {
+            state.discardPile.selectionColor = '';
+        }
+
         const emptySequence = getEmptySequence(state.sequences);
         if (isTriple(selectedCards) || isSequence(selectedCards)) {
             selectedCards.forEach(card => { card.selectionColor = 'lightgreen' });
@@ -151,15 +171,28 @@ export const gameSlice = createSlice({
         if (null !== sequenceOfCards) {
             selectedSequence.cards = sequenceOfCards;
         }
+    },
+    discardCard: (state) => {
+        const selectedCards = state.hand.filter(card => card.selectionColor);
+        if (1 !== selectedCards.length) {
+            return;
+        }
+        const discardedCard = selectedCards[0];
+        discardedCard.selectionColor = '';
+        state.discardPile.selectionColor = '';
+        
+        state.hand = state.hand.filter(card => !card.selectionColor);
+        state.discardPile.cards.push(discardedCard);
     }
   },
 })
 
-export const { setDeck, pickCard, selectCardInHand, moveSelectedHandToSequence } = gameSlice.actions;
+export const { discardCard, startGame, setDeck, pickCard, selectCardInHand, moveSelectedHandToSequence } = gameSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectDeck = (state: RootState) => state.gameSlice.deck;
 export const selectHand = (state: RootState) => state.gameSlice.hand;
 export const selectSequences = (state: RootState) => state.gameSlice.sequences;
+export const selectDiscardPile = (state: RootState) => state.gameSlice.discardPile;
 
 export default gameSlice.reducer;

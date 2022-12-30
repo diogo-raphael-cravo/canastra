@@ -145,7 +145,7 @@ class Decks {
     return [...REGULAR_DECK];
   }
   static get SHUFFLED_DECK() {
-    return knuthShuffle(Decks.REGULAR_DECK);
+    return knuthShuffle([...Decks.REGULAR_DECK]);
   }
 }
 

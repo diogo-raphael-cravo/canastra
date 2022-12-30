@@ -11,6 +11,12 @@ test('should return the initial state', () => {
             selectionColor: '',
         }],
         hand: [],
+        discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
     });
 });
 
@@ -20,6 +26,12 @@ describe('pickCard', () => {
             deck: [],
             sequences: [],
             hand: [],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         };
         
         expect(() => reducer(previousState, pickCard())).toThrow('cannot pick when deck is empty');
@@ -41,6 +53,12 @@ describe('pickCard', () => {
                 name: '3',
                 suit: '3',
             }],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         };
         
         expect(reducer(previousState, pickCard())).toEqual({
@@ -59,6 +77,12 @@ describe('pickCard', () => {
                 name: '2',
                 suit: '2',
             }],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         });
     });
 });
@@ -69,6 +93,12 @@ describe('selectCardInHand', () => {
             deck: [],
             sequences: [],
             hand: [],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         };
         
         expect(() => reducer(previousState, selectCardInHand('notinhand')))
@@ -103,6 +133,12 @@ describe('selectCardInHand', () => {
                     name: '4',
                     suit: 'diamonds',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('c'))).toEqual({
@@ -133,6 +169,12 @@ describe('selectCardInHand', () => {
                     name: '4',
                     suit: 'diamonds',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
         test('should remove highlight when more than a triple is selected', () => {
@@ -164,6 +206,12 @@ describe('selectCardInHand', () => {
                     name: '4',
                     suit: 'diamonds',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('d'))).toEqual({
@@ -195,6 +243,12 @@ describe('selectCardInHand', () => {
                     suit: 'diamonds',
                     selectionColor: 'lightblue',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
         test('should highlight triple again when extra card is deselected', () => {
@@ -227,6 +281,12 @@ describe('selectCardInHand', () => {
                     suit: 'diamonds',
                     selectionColor: 'lightblue',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('d'))).toEqual({
@@ -258,6 +318,12 @@ describe('selectCardInHand', () => {
                     suit: 'diamonds',
                     selectionColor: '',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
         test('should highlight sequence of type triple when matching card is selected', () => {
@@ -292,6 +358,12 @@ describe('selectCardInHand', () => {
                     suit: 'spades',
                     selectionColor: '',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -328,6 +400,12 @@ describe('selectCardInHand', () => {
                     suit: 'spades',
                     selectionColor: 'lightgreen',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
         test('should remove highlight of sequence of type triple when matching card is deselected', () => {
@@ -365,6 +443,12 @@ describe('selectCardInHand', () => {
                     suit: 'spades',
                     selectionColor: 'lightgreen',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -401,6 +485,12 @@ describe('selectCardInHand', () => {
                     suit: 'spades',
                     selectionColor: '',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
     });
@@ -433,6 +523,12 @@ describe('selectCardInHand', () => {
                     name: '4',
                     suit: 'diamonds',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('c'))).toEqual({
@@ -463,6 +559,12 @@ describe('selectCardInHand', () => {
                     name: '4',
                     suit: 'diamonds',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
         test('should remove highlight when more than a sequence is selected', () => {
@@ -494,6 +596,12 @@ describe('selectCardInHand', () => {
                     name: '4',
                     suit: 'diamonds',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('d'))).toEqual({
@@ -525,6 +633,12 @@ describe('selectCardInHand', () => {
                     suit: 'diamonds',
                     selectionColor: 'lightblue',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
         test('should highlight sequence again when extra card is deselected', () => {
@@ -557,6 +671,12 @@ describe('selectCardInHand', () => {
                     suit: 'diamonds',
                     selectionColor: 'lightblue',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('d'))).toEqual({
@@ -588,6 +708,12 @@ describe('selectCardInHand', () => {
                     suit: 'diamonds',
                     selectionColor: '',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
         test('should highlight sequence of type sequence when matching card is selected (lower bound and 2 as joker)', () => {
@@ -622,6 +748,12 @@ describe('selectCardInHand', () => {
                     suit: 'hearts',
                     selectionColor: '',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -658,6 +790,12 @@ describe('selectCardInHand', () => {
                     suit: 'hearts',
                     selectionColor: 'lightgreen',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
         test('should highlight sequence of type sequence when matching card is selected (lower bound)', () => {
@@ -692,6 +830,12 @@ describe('selectCardInHand', () => {
                     suit: 'hearts',
                     selectionColor: '',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -728,6 +872,12 @@ describe('selectCardInHand', () => {
                     suit: 'hearts',
                     selectionColor: 'lightgreen',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
         test('should remove highlight of sequence of type sequence when matching card is deselected', () => {
@@ -765,6 +915,12 @@ describe('selectCardInHand', () => {
                     suit: 'hearts',
                     selectionColor: 'lightgreen',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -801,6 +957,12 @@ describe('selectCardInHand', () => {
                     suit: 'hearts',
                     selectionColor: '',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
         test('should highlight sequence of type sequence when matching card is selected (upper bound)', () => {
@@ -835,6 +997,12 @@ describe('selectCardInHand', () => {
                     suit: 'hearts',
                     selectionColor: '',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -871,6 +1039,12 @@ describe('selectCardInHand', () => {
                     suit: 'hearts',
                     selectionColor: 'lightgreen',
                 }],
+                discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
             });
         });
     });
@@ -882,6 +1056,12 @@ describe('moveSelectedHandToSequence', () => {
             deck: [],
             sequences: [],
             hand: [],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         };
         
         expect(() => reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'notavailable', cardId: '' })))
@@ -916,6 +1096,12 @@ describe('moveSelectedHandToSequence', () => {
                 suit: 'diamonds',
                 selectionColor: 'lightblue',
             }],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'mockid', cardId: '' }))).toEqual({
@@ -946,6 +1132,12 @@ describe('moveSelectedHandToSequence', () => {
                 suit: 'diamonds',
                 selectionColor: 'lightblue',
             }],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         });
     });
     test('should set sequence type to triple when moving triple to empty sequence', () => {
@@ -978,6 +1170,12 @@ describe('moveSelectedHandToSequence', () => {
                 suit: 'diamonds',
                 selectionColor: '',
             }],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'mockid', cardId: '' }))).toEqual({
@@ -1014,6 +1212,12 @@ describe('moveSelectedHandToSequence', () => {
                 suit: 'diamonds',
                 selectionColor: '',
             }],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         });
     });
     test('should move a single card to a sequence of type triple', () => {
@@ -1051,6 +1255,12 @@ describe('moveSelectedHandToSequence', () => {
                 suit: 'spades',
                 selectionColor: 'lightgreen',
             }],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'tripleid', cardId: '' }))).toEqual({
@@ -1087,6 +1297,12 @@ describe('moveSelectedHandToSequence', () => {
                 selectionColor: '',
             }],
             hand: [],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         });
     });
     test('should set sequence type to sequence when moving sequence to empty sequence', () => {
@@ -1119,6 +1335,12 @@ describe('moveSelectedHandToSequence', () => {
                 suit: 'diamonds',
                 selectionColor: '',
             }],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'mockid', cardId: '' }))).toEqual({
@@ -1155,6 +1377,12 @@ describe('moveSelectedHandToSequence', () => {
                 suit: 'diamonds',
                 selectionColor: '',
             }],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         });
     });
     test('should move a single card to a sequence of type sequence (upper bound)', () => {
@@ -1192,6 +1420,12 @@ describe('moveSelectedHandToSequence', () => {
                 suit: 'hearts',
                 selectionColor: 'lightgreen',
             }],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'sequenceid', cardId: '' }))).toEqual({
@@ -1228,6 +1462,12 @@ describe('moveSelectedHandToSequence', () => {
                 selectionColor: '',
             }],
             hand: [],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         });
     });
     test('should move a single card to a sequence of type sequence (lower bound)', () => {
@@ -1265,6 +1505,12 @@ describe('moveSelectedHandToSequence', () => {
                 suit: 'hearts',
                 selectionColor: 'lightgreen',
             }],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'sequenceid', cardId: '' }))).toEqual({
@@ -1301,6 +1547,12 @@ describe('moveSelectedHandToSequence', () => {
                 selectionColor: '',
             }],
             hand: [],
+            discardPile: {
+                id: 'discardPileId',
+                type: 'any',
+                cards: [],
+                selectionColor: '',
+            },
         });
     });
 });
