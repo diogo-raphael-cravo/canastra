@@ -1,9 +1,11 @@
 import React from 'react';
 import './style/Deck.css';
 
+import { v4 } from 'uuid';
 import CardBack from './CardBack';
 import Card from './Card';
 import { CardType } from './helpers/Decks';
+
 
 class DeckClass {
   static get REGULAR() { return "REGULAR" }
@@ -24,7 +26,7 @@ function Deck ({ type, remainingCards }: DeckPropsType) {
     function makeChildren(): JSX.Element[] {
       const children: JSX.Element[] = [];
       for (let i = 0; i < Math.floor(remainingCards.length / 10); i++) {
-        children.push((<Card/>));
+        children.push((<Card showBack={false} key={v4()} />));
       }
       return children;
     }
@@ -36,7 +38,7 @@ function Deck ({ type, remainingCards }: DeckPropsType) {
         <div className={`deck ${isEmpty ? 'empty' : ''}`}>
           {!isEmpty && makeChildren()}
           {!isEmpty && !lastCard && <CardBack/>}
-          {isEmpty && <Card/>}
+          {isEmpty && <Card showBack={false} key={v4()} />}
         </div>
       );
     }
@@ -46,7 +48,7 @@ function Deck ({ type, remainingCards }: DeckPropsType) {
       return (
         <div className={`deck ${isEmpty ? 'empty' : ''}`}>
           {!isEmpty && makeChildren()}
-          {isEmpty && <Card/>}
+          {isEmpty && <Card showBack={false} key={v4()} />}
         </div>
       );
     }

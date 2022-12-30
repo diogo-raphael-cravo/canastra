@@ -6,6 +6,7 @@ import CardSuit from './CardSuit';
 import Joker from './Joker';
 
 import CardNames from './helpers/CardNames';
+import logo from './logo.svg';
 
 function makeAce(suit: string) {
     return (
@@ -302,9 +303,17 @@ type CardPropsType = {
     suit?: string,
     selectionColor?: string,
     onClick?: Function,
+    showBack: boolean,
 };
-function Card({ id, name, suit, selectionColor, onClick }: CardPropsType) {
+function Card({ id, name, suit, selectionColor, onClick, showBack }: CardPropsType) {
     if (!name || (!suit && '' !== suit)) {
+        if (showBack) {
+            return (
+                <div className="card">
+                    <img src={logo} className="card-back-image center" alt="logo" />
+                </div>
+            );
+        }
         return <div className={'card'} style={selectionColor ? {backgroundColor: selectionColor} : {}}/>;
     }
     const isAce = CardNames.isAce(name);

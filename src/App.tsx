@@ -31,6 +31,7 @@ function App() {
     const lastDiscardedCard = discardPile.cards[discardPile.cards.length - 1];
     discardPileJsx = <Card id={lastDiscardedCard.id} name={lastDiscardedCard.name} suit={lastDiscardedCard.suit}
       selectionColor={discardPile.selectionColor}
+      showBack={false}
       onClick={() => dispatch(discardCard())}/>;
   }
   return (
@@ -43,7 +44,8 @@ function App() {
         {sequences.map(sequence => <Sequence key={sequence.id} id={sequence.id} cards={sequence.cards} selectionColor={sequence.selectionColor}
           onClick={(selectionObject: HandMovementType) => dispatch(moveSelectedHandToSequence(selectionObject))}/>)}
       </div>
-      <Hand cards={hand} onClickCard={(cardId: string) => dispatch(selectCardInHand(cardId))}/>
+      <Hand cards={hand} showBack={false} onClickCard={(cardId: string) => dispatch(selectCardInHand(cardId))}/>
+      <Hand cards={hand} showBack={true} onClickCard={(cardId: string) => dispatch(selectCardInHand(cardId))}/>
     </div>
   );
 }
