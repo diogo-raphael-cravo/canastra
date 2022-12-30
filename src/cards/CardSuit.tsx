@@ -4,7 +4,7 @@ import CardSuits from './helpers/CardSuits';
 
 type CardSuitPropsType = {
     suit: string,
-    className: string,
+    className?: string,
 };
 function CardSuit({ suit, className }: CardSuitPropsType) {
     const isHearts = CardSuits.isHearts(suit);

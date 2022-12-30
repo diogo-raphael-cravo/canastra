@@ -11,6 +11,8 @@ import { useAppSelector, useAppDispatch } from './Hooks';
 import './App.css';
 
 import { discardCard, startGame, selectDeck, selectHand, pickCard, selectCardInHand, selectSequences, selectDiscardPile, moveSelectedHandToSequence, HandMovementType } from './canastra/slices/GameSlice';
+import CardSuit from './cards/CardSuit';
+import CardSuits from './cards/helpers/CardSuits';
 
 function App() {
   const dispatch = useAppDispatch();

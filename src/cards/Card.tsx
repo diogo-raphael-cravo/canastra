@@ -3,6 +3,7 @@ import './style/Card.css';
 
 import CardMark from './CardMark';
 import CardSuit from './CardSuit';
+import CardLogo from './CardLogo';
 import Joker from './Joker';
 
 import CardNames from './helpers/CardNames';
@@ -310,7 +311,9 @@ function Card({ id, name, suit, selectionColor, onClick, showBack }: CardPropsTy
         if (showBack) {
             return (
                 <div className="card">
-                    <img src={logo} className="card-back-image center" alt="logo" />
+                    <div className="card-back-image center" >
+                        <CardLogo />
+                    </div>
                 </div>
             );
         }
