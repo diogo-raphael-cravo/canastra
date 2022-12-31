@@ -9,14 +9,19 @@ test('should return the initial state', () => {
             type: 'any',
             cards: [],
             selectionColor: '',
+            playerTeam: true,
         }],
-        hand: [],
+        playerId: '',
+        players: [],
         discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+            id: 'mockid',
+            type: 'any',
+            cards: [],
+            selectionColor: '',
+            playerTeam: false,
+        },
+        currentPlayer: '',
+        loading: false,
     });
 });
 
@@ -25,16 +30,24 @@ describe('pickCard', () => {
         const previousState: GameSliceState = {
             deck: [],
             sequences: [],
-            hand: [],
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [],
+                playerTeam: true,
+            }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         };
         
-        expect(() => reducer(previousState, pickCard())).toThrow('cannot pick when deck is empty');
+        expect(() => reducer(previousState, pickCard('playerid'))).toThrow('cannot pick when deck is empty');
     });
     test('should pick the last the card on the deck and place it last in the hand', () => {
         const previousState: GameSliceState = {
@@ -48,41 +61,57 @@ describe('pickCard', () => {
                 suit: '2',
             }],
             sequences: [],
-            hand: [{
-                id: '3',
-                name: '3',
-                suit: '3',
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [{
+                    id: '3',
+                    name: '3',
+                    suit: '3',
+                }],
+                playerTeam: true,
             }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         };
         
-        expect(reducer(previousState, pickCard())).toEqual({
+        expect(reducer(previousState, pickCard('playerid'))).toEqual({
             deck: [{
                 id: '1',
                 name: '1',
                 suit: '1',
             }],
             sequences: [],
-            hand: [{
-                id: '3',
-                name: '3',
-                suit: '3',
-            }, {
-                id: '2',
-                name: '2',
-                suit: '2',
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [{
+                    id: '3',
+                    name: '3',
+                    suit: '3',
+                }, {
+                    id: '2',
+                    name: '2',
+                    suit: '2',
+                }],
+                playerTeam: true,
             }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         });
     });
 });
@@ -92,17 +121,27 @@ describe('selectCardInHand', () => {
         const previousState: GameSliceState = {
             deck: [],
             sequences: [],
-            hand: [],
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [],
+                playerTeam: true,
+            }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         };
         
-        expect(() => reducer(previousState, selectCardInHand('notinhand')))
-            .toThrow('trying to select card notinhand which is not in hand');
+        expect(() => reducer(previousState, selectCardInHand({
+            cardId: 'notinhand',
+            playerId: 'playerid',
+        }))).toThrow('trying to select card notinhand which is not in hand');
     });
     describe('triples', () => {
         test('should highlight when a triple is selected', () => {
@@ -113,68 +152,89 @@ describe('selectCardInHand', () => {
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'b',
-                    name: '3',
-                    suit: 'diamonds',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'c',
-                    name: '3',
-                    suit: 'cloves',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'b',
+                        name: '3',
+                        suit: 'diamonds',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'c',
+                        name: '3',
+                        suit: 'cloves',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('c'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'c',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: 'lightgreen',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'b',
-                    name: '3',
-                    suit: 'diamonds',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'c',
-                    name: '3',
-                    suit: 'cloves',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'b',
+                        name: '3',
+                        suit: 'diamonds',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'c',
+                        name: '3',
+                        suit: 'cloves',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
         test('should remove highlight when more than a triple is selected', () => {
@@ -185,70 +245,91 @@ describe('selectCardInHand', () => {
                     type: 'any',
                     cards: [],
                     selectionColor: 'lightgreen',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'b',
-                    name: '3',
-                    suit: 'diamonds',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'c',
-                    name: '3',
-                    suit: 'cloves',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'b',
+                        name: '3',
+                        suit: 'diamonds',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'c',
+                        name: '3',
+                        suit: 'cloves',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('d'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'd',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'b',
-                    name: '3',
-                    suit: 'diamonds',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'c',
-                    name: '3',
-                    suit: 'cloves',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
-                    selectionColor: 'lightblue',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'b',
+                        name: '3',
+                        suit: 'diamonds',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'c',
+                        name: '3',
+                        suit: 'cloves',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                        selectionColor: 'lightblue',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
         test('should highlight triple again when extra card is deselected', () => {
@@ -259,71 +340,92 @@ describe('selectCardInHand', () => {
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'b',
-                    name: '3',
-                    suit: 'diamonds',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'c',
-                    name: '3',
-                    suit: 'cloves',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
-                    selectionColor: 'lightblue',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'b',
+                        name: '3',
+                        suit: 'diamonds',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'c',
+                        name: '3',
+                        suit: 'cloves',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                        selectionColor: 'lightblue',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('d'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'd',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: 'lightgreen',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'b',
-                    name: '3',
-                    suit: 'diamonds',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'c',
-                    name: '3',
-                    suit: 'cloves',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
-                    selectionColor: '',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'b',
+                        name: '3',
+                        suit: 'diamonds',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'c',
+                        name: '3',
+                        suit: 'cloves',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                        selectionColor: '',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
         test('should highlight sequence of type triple when matching card is selected', () => {
@@ -346,27 +448,40 @@ describe('selectCardInHand', () => {
                         suit: 'cloves',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'spades',
-                    selectionColor: '',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'spades',
+                        selectionColor: '',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('a'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'a',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
@@ -388,24 +503,34 @@ describe('selectCardInHand', () => {
                         selectionColor: '',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'spades',
-                    selectionColor: 'lightgreen',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'spades',
+                        selectionColor: 'lightgreen',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: 'lightgreen',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
         test('should remove highlight of sequence of type triple when matching card is deselected', () => {
@@ -431,27 +556,40 @@ describe('selectCardInHand', () => {
                         selectionColor: '',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'spades',
-                    selectionColor: 'lightgreen',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'spades',
+                        selectionColor: 'lightgreen',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('a'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'a',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
@@ -473,24 +611,34 @@ describe('selectCardInHand', () => {
                         selectionColor: '',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'spades',
-                    selectionColor: '',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'spades',
+                        selectionColor: '',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
     });
@@ -503,68 +651,89 @@ describe('selectCardInHand', () => {
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'b',
-                    name: '4',
-                    suit: 'hearts',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'c',
-                    name: '5',
-                    suit: 'hearts',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'b',
+                        name: '4',
+                        suit: 'hearts',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'c',
+                        name: '5',
+                        suit: 'hearts',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('c'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'c',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: 'lightgreen',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'b',
-                    name: '4',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'c',
-                    name: '5',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'b',
+                        name: '4',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'c',
+                        name: '5',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
         test('should remove highlight when more than a sequence is selected', () => {
@@ -575,70 +744,91 @@ describe('selectCardInHand', () => {
                     type: 'any',
                     cards: [],
                     selectionColor: 'lightgreen',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'b',
-                    name: '4',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'c',
-                    name: '5',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'b',
+                        name: '4',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'c',
+                        name: '5',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('d'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'd',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'b',
-                    name: '4',
-                    suit: 'hearts',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'c',
-                    name: '5',
-                    suit: 'hearts',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
-                    selectionColor: 'lightblue',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'b',
+                        name: '4',
+                        suit: 'hearts',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'c',
+                        name: '5',
+                        suit: 'hearts',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                        selectionColor: 'lightblue',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
         test('should highlight sequence again when extra card is deselected', () => {
@@ -649,71 +839,92 @@ describe('selectCardInHand', () => {
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'b',
-                    name: '4',
-                    suit: 'hearts',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'c',
-                    name: '5',
-                    suit: 'hearts',
-                    selectionColor: 'lightblue',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
-                    selectionColor: 'lightblue',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'b',
+                        name: '4',
+                        suit: 'hearts',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'c',
+                        name: '5',
+                        suit: 'hearts',
+                        selectionColor: 'lightblue',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                        selectionColor: 'lightblue',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('d'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'd',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: 'lightgreen',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'b',
-                    name: '4',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'c',
-                    name: '5',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
-                }, {
-                    id: 'd',
-                    name: '4',
-                    suit: 'diamonds',
-                    selectionColor: '',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'b',
+                        name: '4',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'c',
+                        name: '5',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }, {
+                        id: 'd',
+                        name: '4',
+                        suit: 'diamonds',
+                        selectionColor: '',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
         test('should highlight sequence of type sequence when matching card is selected (lower bound and 2 as joker)', () => {
@@ -736,27 +947,40 @@ describe('selectCardInHand', () => {
                         suit: 'hearts',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '2',
-                    suit: 'hearts',
-                    selectionColor: '',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '2',
+                        suit: 'hearts',
+                        selectionColor: '',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('a'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'a',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
@@ -778,24 +1002,34 @@ describe('selectCardInHand', () => {
                         selectionColor: 'lightgreen',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '2',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '2',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: 'lightgreen',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
         test('should highlight sequence of type sequence when matching card is selected (lower bound)', () => {
@@ -818,27 +1052,40 @@ describe('selectCardInHand', () => {
                         suit: 'hearts',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: '',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: '',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('a'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'a',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
@@ -860,24 +1107,34 @@ describe('selectCardInHand', () => {
                         selectionColor: '',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '3',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '3',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: 'lightgreen',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
         test('should remove highlight of sequence of type sequence when matching card is deselected', () => {
@@ -903,27 +1160,40 @@ describe('selectCardInHand', () => {
                         selectionColor: '',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '2',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '2',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('a'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'a',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
@@ -945,24 +1215,34 @@ describe('selectCardInHand', () => {
                         selectionColor: '',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '2',
-                    suit: 'hearts',
-                    selectionColor: '',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '2',
+                        suit: 'hearts',
+                        selectionColor: '',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
         test('should highlight sequence of type sequence when matching card is selected (upper bound)', () => {
@@ -985,27 +1265,40 @@ describe('selectCardInHand', () => {
                         suit: 'hearts',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '6',
-                    suit: 'hearts',
-                    selectionColor: '',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '6',
+                        suit: 'hearts',
+                        selectionColor: '',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             };
             
-            expect(reducer(previousState, selectCardInHand('a'))).toEqual({
+            expect(reducer(previousState, selectCardInHand({
+                cardId: 'a',
+                playerId: 'playerid',
+            }))).toEqual({
                 deck: [],
                 sequences: [{
                     id: 'mockid',
@@ -1027,24 +1320,34 @@ describe('selectCardInHand', () => {
                         selectionColor: 'lightgreen',
                     }],
                     selectionColor: '',
+                    playerTeam: true,
                 }, {
                     id: 'mockid',
                     type: 'any',
                     cards: [],
                     selectionColor: '',
+                    playerTeam: true,
                 }],
-                hand: [{
-                    id: 'a',
-                    name: '6',
-                    suit: 'hearts',
-                    selectionColor: 'lightgreen',
+                playerId: 'playerid',
+                players: [{
+                    id: 'playerid',
+                    hand: [{
+                        id: 'a',
+                        name: '6',
+                        suit: 'hearts',
+                        selectionColor: 'lightgreen',
+                    }],
+                    playerTeam: true,
                 }],
                 discardPile: {
-                id: 'discardPileId',
-                type: 'any',
-                cards: [],
-                selectionColor: '',
-            },
+                    id: 'discardPileId',
+                    type: 'any',
+                    cards: [],
+                    selectionColor: 'lightgreen',
+                    playerTeam: false,
+                },
+                currentPlayer: 'playerid',
+                loading: false,
             });
         });
     });
@@ -1055,17 +1358,28 @@ describe('moveSelectedHandToSequence', () => {
         const previousState: GameSliceState = {
             deck: [],
             sequences: [],
-            hand: [],
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [],
+                playerTeam: true,
+            }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         };
         
-        expect(() => reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'notavailable', cardId: '' })))
-            .toThrow('could not find sequence notavailable');
+        expect(() => reducer(previousState, moveSelectedHandToSequence({
+            sequenceId: 'notavailable',
+            cardId: '',
+            playerId: 'playerid',
+        }))).toThrow('could not find sequence notavailable');
     });
     test('should do nothing when selected cards are neither a sequence nor triple', () => {
         const previousState: GameSliceState = {
@@ -1075,69 +1389,91 @@ describe('moveSelectedHandToSequence', () => {
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [{
-                id: 'a',
-                name: '3',
-                suit: 'hearts',
-                selectionColor: 'lightblue',
-            }, {
-                id: 'b',
-                name: '4',
-                suit: 'hearts',
-                selectionColor: 'lightblue',
-            }, {
-                id: 'c',
-                name: '5',
-                suit: 'hearts',
-            }, {
-                id: 'd',
-                name: '5',
-                suit: 'diamonds',
-                selectionColor: 'lightblue',
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [{
+                    id: 'a',
+                    name: '3',
+                    suit: 'hearts',
+                    selectionColor: 'lightblue',
+                }, {
+                    id: 'b',
+                    name: '4',
+                    suit: 'hearts',
+                    selectionColor: 'lightblue',
+                }, {
+                    id: 'c',
+                    name: '5',
+                    suit: 'hearts',
+                }, {
+                    id: 'd',
+                    name: '5',
+                    suit: 'diamonds',
+                    selectionColor: 'lightblue',
+                }],
+                playerTeam: true,
             }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         };
         
-        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'mockid', cardId: '' }))).toEqual({
+        expect(reducer(previousState, moveSelectedHandToSequence({
+            sequenceId: 'mockid',
+            cardId: '',
+            playerId: 'playerid',
+        }))).toEqual({
             deck: [],
             sequences: [{
                 id: 'mockid',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [{
-                id: 'a',
-                name: '3',
-                suit: 'hearts',
-                selectionColor: 'lightblue',
-            }, {
-                id: 'b',
-                name: '4',
-                suit: 'hearts',
-                selectionColor: 'lightblue',
-            }, {
-                id: 'c',
-                name: '5',
-                suit: 'hearts',
-            }, {
-                id: 'd',
-                name: '5',
-                suit: 'diamonds',
-                selectionColor: 'lightblue',
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [{
+                    id: 'a',
+                    name: '3',
+                    suit: 'hearts',
+                    selectionColor: 'lightblue',
+                }, {
+                    id: 'b',
+                    name: '4',
+                    suit: 'hearts',
+                    selectionColor: 'lightblue',
+                }, {
+                    id: 'c',
+                    name: '5',
+                    suit: 'hearts',
+                }, {
+                    id: 'd',
+                    name: '5',
+                    suit: 'diamonds',
+                    selectionColor: 'lightblue',
+                }],
+                playerTeam: true,
             }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         });
     });
     test('should set sequence type to triple when moving triple to empty sequence', () => {
@@ -1148,37 +1484,50 @@ describe('moveSelectedHandToSequence', () => {
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [{
-                id: 'a',
-                name: 'A',
-                suit: 'hearts',
-                selectionColor: 'lightgreen',
-            }, {
-                id: 'b',
-                name: 'A',
-                suit: 'diamonds',
-                selectionColor: 'lightgreen',
-            }, {
-                id: 'c',
-                name: 'A',
-                suit: 'cloves',
-                selectionColor: 'lightgreen',
-            }, {
-                id: 'd',
-                name: '5',
-                suit: 'diamonds',
-                selectionColor: '',
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [{
+                    id: 'a',
+                    name: 'A',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'b',
+                    name: 'A',
+                    suit: 'diamonds',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'c',
+                    name: 'A',
+                    suit: 'cloves',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'd',
+                    name: '5',
+                    suit: 'diamonds',
+                    selectionColor: '',
+                }],
+                playerTeam: true,
             }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         };
         
-        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'mockid', cardId: '' }))).toEqual({
+        expect(reducer(previousState, moveSelectedHandToSequence({
+            sequenceId: 'mockid',
+            cardId: '',
+            playerId: 'playerid',
+        }))).toEqual({
             deck: [],
             sequences: [{
                 id: 'mockid',
@@ -1200,24 +1549,34 @@ describe('moveSelectedHandToSequence', () => {
                     selectionColor: '',
                 }],
                 selectionColor: '',
+                playerTeam: true,
             }, {
                 id: 'mockid',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [{
-                id: 'd',
-                name: '5',
-                suit: 'diamonds',
-                selectionColor: '',
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [{
+                    id: 'd',
+                    name: '5',
+                    suit: 'diamonds',
+                    selectionColor: '',
+                }],
+                playerTeam: true,
             }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         });
     });
     test('should move a single card to a sequence of type triple', () => {
@@ -1243,27 +1602,41 @@ describe('moveSelectedHandToSequence', () => {
                     selectionColor: 'lightgreen',
                 }],
                 selectionColor: '',
+                playerTeam: true,
             }, {
                 id: 'mockid',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [{
-                id: 'd',
-                name: 'A',
-                suit: 'spades',
-                selectionColor: 'lightgreen',
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [{
+                    id: 'd',
+                    name: 'A',
+                    suit: 'spades',
+                    selectionColor: 'lightgreen',
+                }],
+                playerTeam: true,
             }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         };
         
-        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'tripleid', cardId: '' }))).toEqual({
+        expect(reducer(previousState, moveSelectedHandToSequence({
+            sequenceId: 'tripleid',
+            cardId: '',
+            playerId: 'playerid',
+        }))).toEqual({
             deck: [],
             sequences: [{
                 id: 'tripleid',
@@ -1290,19 +1663,29 @@ describe('moveSelectedHandToSequence', () => {
                     selectionColor: '',
                 }],
                 selectionColor: '',
+                playerTeam: true,
             }, {
                 id: 'mockid',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [],
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [],
+                playerTeam: true,
+            }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         });
     });
     test('should set sequence type to sequence when moving sequence to empty sequence', () => {
@@ -1313,37 +1696,50 @@ describe('moveSelectedHandToSequence', () => {
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [{
-                id: 'a',
-                name: 'A',
-                suit: 'hearts',
-                selectionColor: 'lightgreen',
-            }, {
-                id: 'b',
-                name: '2',
-                suit: 'hearts',
-                selectionColor: 'lightgreen',
-            }, {
-                id: 'c',
-                name: '3',
-                suit: 'hearts',
-                selectionColor: 'lightgreen',
-            }, {
-                id: 'd',
-                name: '5',
-                suit: 'diamonds',
-                selectionColor: '',
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [{
+                    id: 'a',
+                    name: 'A',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'b',
+                    name: '2',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'c',
+                    name: '3',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }, {
+                    id: 'd',
+                    name: '5',
+                    suit: 'diamonds',
+                    selectionColor: '',
+                }],
+                playerTeam: true,
             }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         };
         
-        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'mockid', cardId: '' }))).toEqual({
+        expect(reducer(previousState, moveSelectedHandToSequence({
+            sequenceId: 'mockid',
+            cardId: '',
+            playerId: 'playerid',
+         }))).toEqual({
             deck: [],
             sequences: [{
                 id: 'mockid',
@@ -1365,24 +1761,34 @@ describe('moveSelectedHandToSequence', () => {
                     selectionColor: '',
                 }],
                 selectionColor: '',
+                playerTeam: true,
             }, {
                 id: 'mockid',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [{
-                id: 'd',
-                name: '5',
-                suit: 'diamonds',
-                selectionColor: '',
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [{
+                    id: 'd',
+                    name: '5',
+                    suit: 'diamonds',
+                    selectionColor: '',
+                }],
+                playerTeam: true,
             }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         });
     });
     test('should move a single card to a sequence of type sequence (upper bound)', () => {
@@ -1408,27 +1814,41 @@ describe('moveSelectedHandToSequence', () => {
                     selectionColor: 'lightgreen',
                 }],
                 selectionColor: '',
+                playerTeam: true,
             }, {
                 id: 'mockid',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [{
-                id: 'd',
-                name: '4',
-                suit: 'hearts',
-                selectionColor: 'lightgreen',
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [{
+                    id: 'd',
+                    name: '4',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }],
+                playerTeam: true,
             }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         };
         
-        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'sequenceid', cardId: '' }))).toEqual({
+        expect(reducer(previousState, moveSelectedHandToSequence({
+            sequenceId: 'sequenceid', 
+            cardId: '',
+            playerId: 'playerid',
+        }))).toEqual({
             deck: [],
             sequences: [{
                 id: 'sequenceid',
@@ -1455,19 +1875,29 @@ describe('moveSelectedHandToSequence', () => {
                     selectionColor: '',
                 }],
                 selectionColor: '',
+                playerTeam: true,
             }, {
                 id: 'mockid',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [],
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [],
+                playerTeam: true,
+            }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         });
     });
     test('should move a single card to a sequence of type sequence (lower bound)', () => {
@@ -1493,27 +1923,41 @@ describe('moveSelectedHandToSequence', () => {
                     selectionColor: 'lightgreen',
                 }],
                 selectionColor: '',
+                playerTeam: true,
             }, {
                 id: 'mockid',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [{
-                id: 'd',
-                name: 'A',
-                suit: 'hearts',
-                selectionColor: 'lightgreen',
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [{
+                    id: 'd',
+                    name: 'A',
+                    suit: 'hearts',
+                    selectionColor: 'lightgreen',
+                }],
+                playerTeam: true,
             }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         };
         
-        expect(reducer(previousState, moveSelectedHandToSequence({ sequenceId: 'sequenceid', cardId: '' }))).toEqual({
+        expect(reducer(previousState, moveSelectedHandToSequence({
+            sequenceId: 'sequenceid',
+            cardId: '',
+            playerId: 'playerid',
+        }))).toEqual({
             deck: [],
             sequences: [{
                 id: 'sequenceid',
@@ -1540,19 +1984,29 @@ describe('moveSelectedHandToSequence', () => {
                     selectionColor: '',
                 }],
                 selectionColor: '',
+                playerTeam: true,
             }, {
                 id: 'mockid',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: true,
             }],
-            hand: [],
+            playerId: 'playerid',
+            players: [{
+                id: 'playerid',
+                hand: [],
+                playerTeam: true,
+            }],
             discardPile: {
                 id: 'discardPileId',
                 type: 'any',
                 cards: [],
                 selectionColor: '',
+                playerTeam: false,
             },
+            currentPlayer: 'playerid',
+            loading: false,
         });
     });
 });

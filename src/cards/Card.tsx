@@ -7,7 +7,6 @@ import CardLogo from './CardLogo';
 import Joker from './Joker';
 
 import CardNames from './helpers/CardNames';
-import logo from './logo.svg';
 
 function makeAce(suit: string) {
     return (
