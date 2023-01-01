@@ -29,6 +29,7 @@ export interface GameSliceState {
   playerId: string,
   currentPlayer: string,
   loading: boolean,
+  pickedCard: boolean,
 };
 
 const initialState: GameSliceState = {
@@ -51,6 +52,7 @@ const initialState: GameSliceState = {
     playerId: '',
     currentPlayer: '',
     loading: false,
+    pickedCard: false,
 };
 
 function getEmptySequence(sequences: SequenceType[]): SequenceType {
@@ -58,25 +60,20 @@ function getEmptySequence(sequences: SequenceType[]): SequenceType {
     return playerSequences[playerSequences.length - 1];
 }
 
-export type HandMovementType = {
-    playerId: string,
-    sequenceId: string | null,
-};
-export type HandSelectionType = {
-    playerId: string,
-    cardId: string,
-};
-function doPickCard(state: WritableDraft<GameSliceState>, playerId: string) {
+function doPickCard(state: WritableDraft<GameSliceState>) {
     if (0 === state.deck.length) {
         throw new Error('cannot pick when deck is empty');
     }
     const card = state.deck[state.deck.length - 1];
     state.deck = state.deck.slice(0, state.deck.length - 1);
-    const player = state.players.find(player => player.id === playerId);
+    const player = state.players.find(player => player.id === state.currentPlayer);
     if (!player) {
-        throw new Error(`could not find player with id ${playerId}`);
+        throw new Error(`could not find player with id ${state.currentPlayer}`);
     }
     player.hand = [...player.hand, card];
+    if (state.currentPlayer === state.playerId) {
+        player.hand.sort(Decks.sort);
+    }
 }
 export const gameSlice = createSlice({
   name: 'gameSlice',
@@ -94,9 +91,11 @@ export const gameSlice = createSlice({
             hand: state.deck.slice(0, cardCountPerPlayer),
             playerTeam: true,
         });
+        state.players[0].hand.sort(Decks.sort);
         state.playerId = state.players[0].id;
-        doPickCard(state, state.playerId);
         state.currentPlayer = state.players[0].id;
+        doPickCard(state);
+        state.pickedCard = false;
         const playerCount = action.payload;
         for (let i = 1; i < playerCount; i++) {
             const initialCardIndex = cardCountPerPlayer * i;
@@ -108,19 +107,28 @@ export const gameSlice = createSlice({
         }
         state.deck = state.deck.slice(cardCountPerPlayer * playerCount, state.deck.length);
     },
-    pickCard: (state, action: PayloadAction<string>) => {
-        doPickCard(state, action.payload);
+    pickCard: (state) => {
+        if (state.currentPlayer === state.playerId) {
+            if (state.pickedCard) {
+                return;
+            }
+            state.pickedCard = true;
+        }
+        doPickCard(state);
     },
     // TODO: do not highlight when two joekrs
-    selectCardInHand: (state, action: PayloadAction<HandSelectionType>) => {
-        const player = state.players.find(player => player.id === action.payload.playerId);
+    selectCardInHand: (state, action: PayloadAction<string>) => {
+        if (state.currentPlayer === state.playerId && !state.pickedCard) {
+            return;
+        }
+        const player = state.players.find(player => player.id === state.currentPlayer);
         if (!player) {
-            throw new Error(`could not find player with id ${action.payload.playerId}`);
+            throw new Error(`could not find player with id ${state.currentPlayer}`);
         }
         const hand = player.hand;
-        const card = hand.find(card => card.id === action.payload.cardId);
+        const card = hand.find(card => card.id === action.payload);
         if (!card) {
-            throw new Error(`trying to select card ${action.payload.cardId} which is not in hand`);
+            throw new Error(`trying to select card ${action.payload} which is not in hand`);
         }
         if (card.selectionColor) {
             card.selectionColor = '';
@@ -128,7 +136,7 @@ export const gameSlice = createSlice({
             card.selectionColor = 'lightblue';
         }
 
-        if (action.payload.playerId !== state.playerId) {
+        if (state.currentPlayer !== state.playerId) {
             return;
         }
         const selectedCards = hand.filter(card => card.selectionColor);
@@ -184,14 +192,14 @@ export const gameSlice = createSlice({
             }
         });
     },
-    moveSelectedHandToSequence: (state, action: PayloadAction<HandMovementType>) => {
-        const player = state.players.find(player => player.id === action.payload.playerId);
+    moveSelectedHandToSequence: (state, action: PayloadAction<string | null>) => {
+        const player = state.players.find(player => player.id === state.currentPlayer);
         if (!player) {
-            throw new Error(`could not find player with id ${action.payload.playerId}`);
+            throw new Error(`could not find player with id ${state.currentPlayer}`);
         }
 
         let selectedSequence: SequenceType | undefined;
-        if (null === action.payload.sequenceId) {
+        if (null === action.payload) {
             selectedSequence = {
                 id: v4(),
                 type: SEQUENCE_TYPE_ANY,
@@ -201,10 +209,10 @@ export const gameSlice = createSlice({
             };
             state.sequences.push(selectedSequence);
         } else {
-            selectedSequence = state.sequences.find(sequence => sequence.id === action.payload.sequenceId);
+            selectedSequence = state.sequences.find(sequence => sequence.id === action.payload);
         }
         if (!selectedSequence) {
-            throw new Error(`could not find sequence ${action.payload.sequenceId}`);
+            throw new Error(`could not find sequence ${action.payload}`);
         }
         const selectedCards = player.hand.filter(card => card.selectionColor);
 
@@ -247,10 +255,10 @@ export const gameSlice = createSlice({
 
         state.discardPile.selectionColor = '';
     },
-    discardCard: (state, action: PayloadAction<string>) => {
-        const player = state.players.find(player => player.id === action.payload);
+    discardCard: (state) => {
+        const player = state.players.find(player => player.id === state.currentPlayer);
         if (!player) {
-            throw new Error(`could not find player with id ${action.payload}`);
+            throw new Error(`could not find player with id ${state.currentPlayer}`);
         }
         const selectedCards = player.hand.filter(card => card.selectionColor);
         if (1 !== selectedCards.length) {
@@ -264,21 +272,41 @@ export const gameSlice = createSlice({
         discardedCard.selectionColor = '';
         state.discardPile.selectionColor = '';
 
+        if (state.currentPlayer === state.playerId) {
+            state.pickedCard = false;
+        }
+
         const currentPlayerIndex = state.players.findIndex(player => player.id === state.currentPlayer);
         if (state.players.length - 1 === currentPlayerIndex) {
             state.currentPlayer = state.players[0].id;
         } else {
             state.currentPlayer = state.players[currentPlayerIndex + 1].id;
         }
-
-        if (state.currentPlayer === state.playerId) {
-            doPickCard(state, state.playerId);
+    },
+    pickDiscarded: (state) => {
+        if (0 === state.discardPile.cards.length) {
+            return;
         }
-    }
+        if (state.currentPlayer === state.playerId) {
+            if (state.pickedCard) {
+                return;
+            }
+            state.pickedCard = true;
+        }
+        const player = state.players.find(player => player.id === state.currentPlayer);
+        if (!player) {
+            throw new Error(`could not find player with id ${state.currentPlayer}`);
+        }
+        player.hand = [...player.hand, ...state.discardPile.cards];
+        state.discardPile.cards = [];
+        if (state.currentPlayer === state.playerId) {
+            player.hand.sort(Decks.sort);
+        }
+    },
   },
 })
 
-export const { setLoading, discardCard, startGame, pickCard, selectCardInHand, moveSelectedHandToSequence } = gameSlice.actions;
+export const { pickDiscarded, setLoading, discardCard, startGame, pickCard, selectCardInHand, moveSelectedHandToSequence } = gameSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectDeck = (state: RootState) => state.gameSlice.deck;
