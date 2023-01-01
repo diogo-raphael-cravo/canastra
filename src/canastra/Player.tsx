@@ -52,6 +52,15 @@ export default class Player {
                     };
                 }
             });
+            if (null !== move && peekDiscarded) {
+                if (isTriple([peekDiscarded, ...sequence.cards]) || isSequence([peekDiscarded, ...sequence.cards])) {
+                    move = {
+                        cardIds: [],
+                        sequenceId: sequence.id,
+                        pickDiscardedPile: true,
+                    };
+                }
+            }
         });
 
         if (hand.length === 2 && peekDiscarded) {

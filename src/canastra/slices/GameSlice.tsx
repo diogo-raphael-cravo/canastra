@@ -84,7 +84,7 @@ export const gameSlice = createSlice({
         state.loading = action.payload;
     },
     startGame: (state, action: PayloadAction<number>) => {
-        state.deck = [...Decks.SHUFFLED_DECK];
+        state.deck = [...Decks.SHUFFLED_DECK, ...Decks.SHUFFLED_DECK];
         const cardCountPerPlayer = 7;
         state.players.push({
             id: v4(),
