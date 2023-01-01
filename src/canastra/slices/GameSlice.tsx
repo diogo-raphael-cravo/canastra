@@ -156,13 +156,14 @@ export const gameSlice = createSlice({
             emptySequence.selectionColor = '';
         }
         
-        [...state.sequences].reverse().slice(1).reverse().forEach(sequence => {
+        const playerSequences = state.sequences.filter(sequence => sequence.playerTeam === player.playerTeam);
+        [...playerSequences].reverse().slice(1).reverse().forEach(sequence => {
             sequence.cards.forEach(card => { card.selectionColor = '' });
         });
         if (0 === selectedCards.length) {
             return;
         }
-        [...state.sequences].reverse().slice(1).reverse().forEach(sequence => {
+        [...playerSequences].reverse().slice(1).reverse().forEach(sequence => {
             if (sequence.type === SEQUENCE_TYPE_TRIPLE) {
                 if (isTriple([...selectedCards, ...sequence.cards])) {
                     sequence.cards[0].selectionColor = 'lightgreen';

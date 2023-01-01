@@ -128,10 +128,12 @@ function knuthShuffle<T>(array: T[]) {
   return array;
 }
 
-const REGULAR_DECK = CardSuits.ALL_SUITS
-  .reduce((accum: CardType[], suit: string) =>
-    accum.concat(CardNames.ALL_IN_A_SUIT.map(name => makeCard(v4(), name, suit))), [])
-  .concat([makeCard(v4(), CardNames.JOKER, ''), makeCard(v4(), CardNames.JOKER, '')]);
+function makeRegularDeck() {
+  return CardSuits.ALL_SUITS
+    .reduce((accum: CardType[], suit: string) =>
+      accum.concat(CardNames.ALL_IN_A_SUIT.map(name => makeCard(v4(), name, suit))), [])
+    .concat([makeCard(v4(), CardNames.JOKER, ''), makeCard(v4(), CardNames.JOKER, '')]);
+}
 
 class Decks {
   static sort(cardA: CardType, cardB: CardType): number {
@@ -142,7 +144,7 @@ class Decks {
     return CardNames.sort(cardA.name, cardB.name);
   }
   static get REGULAR_DECK() {
-    return [...REGULAR_DECK];
+    return [...makeRegularDeck()];
   }
   static get SHUFFLED_DECK() {
     return knuthShuffle([...Decks.REGULAR_DECK]);
