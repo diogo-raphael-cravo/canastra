@@ -85,7 +85,7 @@ function CanastaScore() {
     const score = makeScore(playersThisTeam, sequencesThisTeam, goOutPlayer);
 
     return (
-        <Modal title="Score" open={showScore} onOk={handleOk} footer={[
+        <Modal title="Score" open={showScore} onOk={handleOk} onCancel={handleOk} footer={[
             <Button key="ok" onClick={handleOk} type="primary">
               Ok
             </Button>]}>

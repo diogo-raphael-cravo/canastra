@@ -6,7 +6,7 @@ import Card from '../cards/Card';
 import Player from '../canastra/Player';
 import { useAppSelector, useAppDispatch } from '../Hooks';
 
-import { discardCard, startGame, selectDeck, selectPlayerId, selectPlayers, pickCard, selectCardInHand, selectSequences, selectDiscardPile, moveSelectedHandToSequence, selectCurrentPlayer, selectLoading, setLoading, pickDiscarded } from '../canastra/slices/GameSlice';
+import { discardCard, startGame, selectDeck, selectPlayerId, selectPlayers, pickCard, selectCardInHand, selectSequences, selectDiscardPile, moveSelectedHandToSequence, selectCurrentPlayer, selectLoading, setLoading, pickDiscarded, selectGoOutPlayer } from '../canastra/slices/GameSlice';
 
 const SECONDS = 1000;
 function CanastaGame() {
@@ -19,6 +19,7 @@ function CanastaGame() {
   const discardPile = useAppSelector(selectDiscardPile);
   const currentPlayer = useAppSelector(selectCurrentPlayer);
   const loading = useAppSelector(selectLoading);
+  const goOutPlayer = useAppSelector(selectGoOutPlayer);
   const gameStarted = 0 < cards.length;
 
   useEffect(() => {
@@ -39,6 +40,9 @@ function CanastaGame() {
         }
       } else {
         setTimeout(() => {
+          if (goOutPlayer) {
+            return;
+          }
           const nextMove = Player.getNextPlay(thisPlayer.hand, thisPlayerSequences, null);
           if (null === nextMove) {
             dispatch(selectCardInHand(thisPlayer.hand[0].id));
