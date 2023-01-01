@@ -1377,7 +1377,6 @@ describe('moveSelectedHandToSequence', () => {
         
         expect(() => reducer(previousState, moveSelectedHandToSequence({
             sequenceId: 'notavailable',
-            cardId: '',
             playerId: 'playerid',
         }))).toThrow('could not find sequence notavailable');
     });
@@ -1429,7 +1428,6 @@ describe('moveSelectedHandToSequence', () => {
         
         expect(reducer(previousState, moveSelectedHandToSequence({
             sequenceId: 'mockid',
-            cardId: '',
             playerId: 'playerid',
         }))).toEqual({
             deck: [],
@@ -1525,7 +1523,6 @@ describe('moveSelectedHandToSequence', () => {
         
         expect(reducer(previousState, moveSelectedHandToSequence({
             sequenceId: 'mockid',
-            cardId: '',
             playerId: 'playerid',
         }))).toEqual({
             deck: [],
@@ -1634,7 +1631,6 @@ describe('moveSelectedHandToSequence', () => {
         
         expect(reducer(previousState, moveSelectedHandToSequence({
             sequenceId: 'tripleid',
-            cardId: '',
             playerId: 'playerid',
         }))).toEqual({
             deck: [],
@@ -1737,7 +1733,6 @@ describe('moveSelectedHandToSequence', () => {
         
         expect(reducer(previousState, moveSelectedHandToSequence({
             sequenceId: 'mockid',
-            cardId: '',
             playerId: 'playerid',
          }))).toEqual({
             deck: [],
@@ -1846,7 +1841,6 @@ describe('moveSelectedHandToSequence', () => {
         
         expect(reducer(previousState, moveSelectedHandToSequence({
             sequenceId: 'sequenceid', 
-            cardId: '',
             playerId: 'playerid',
         }))).toEqual({
             deck: [],
@@ -1955,7 +1949,6 @@ describe('moveSelectedHandToSequence', () => {
         
         expect(reducer(previousState, moveSelectedHandToSequence({
             sequenceId: 'sequenceid',
-            cardId: '',
             playerId: 'playerid',
         }))).toEqual({
             deck: [],

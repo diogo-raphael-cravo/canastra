@@ -3,10 +3,11 @@ import Hand from './cards/Hand';
 import Deck from './cards/Deck';
 import Sequence from './cards/Sequence';
 import Card from './cards/Card';
+import Player from './canastra/Player';
 import { useAppSelector, useAppDispatch } from './Hooks';
 import './App.css';
 
-import { discardCard, startGame, selectDeck, selectPlayerId, selectPlayers, pickCard, selectCardInHand, selectSequences, selectDiscardPile, moveSelectedHandToSequence, HandMovementType, selectCurrentPlayer, selectLoading, setLoading } from './canastra/slices/GameSlice';
+import { discardCard, startGame, selectDeck, selectPlayerId, selectPlayers, pickCard, selectCardInHand, selectSequences, selectDiscardPile, moveSelectedHandToSequence, selectCurrentPlayer, selectLoading, setLoading } from './canastra/slices/GameSlice';
 
 const SECONDS = 1000;
 function App() {
@@ -22,28 +23,46 @@ function App() {
   const gameStarted = 0 < cards.length;
 
   useEffect(() => {
-    if (gameStarted && currentPlayer !== playerId && !loading) {
-      dispatch(setLoading(true));
-      setTimeout(() => {
-        const player = players.find(player => player.id === currentPlayer);
-        if (!player) {
-          throw new Error(`could not find current player ${currentPlayer}`);
-        }
-        dispatch(selectCardInHand({
-          cardId: player.hand[0].id,
-          playerId: currentPlayer,
-        }));
-        dispatch(discardCard(currentPlayer));
-        dispatch(setLoading(false));
-      }, 5 * SECONDS);
+    if (gameStarted && currentPlayer !== playerId) {
+      if (!loading) {
+        dispatch(setLoading(true));
+        dispatch(pickCard(currentPlayer));
+      } else {
+        setTimeout(() => {
+          const thisPlayer = players.find(player => player.id === currentPlayer);
+          if (!thisPlayer) {
+            throw new Error(`could not find current player ${currentPlayer}`);
+          }
+          const thisPlayerSequences = sequences.filter(sequence => sequence.playerTeam === thisPlayer.playerTeam);
+          const nextMove = Player.getNextPlay(thisPlayer.hand, thisPlayerSequences);
+          if (null === nextMove) {
+            dispatch(selectCardInHand({
+              cardId: thisPlayer.hand[0].id,
+              playerId: currentPlayer,
+            }));
+            dispatch(discardCard(currentPlayer));
+            dispatch(setLoading(false));
+          } else {
+            nextMove.cardIds.forEach(cardId => {
+              dispatch(selectCardInHand({
+                cardId,
+                playerId: currentPlayer,
+              }));
+            });
+            dispatch(moveSelectedHandToSequence({
+              sequenceId: nextMove.sequenceId,
+              playerId: currentPlayer,
+            }))
+          }
+        }, 1 * SECONDS);
+      }
     }
-  }, [gameStarted, currentPlayer, loading]);
+  }, [gameStarted, currentPlayer, loading, dispatch, playerId, players, sequences]);
 
   if (!gameStarted) {
     dispatch(startGame(2));
     return <div/>;
   }
-
 
   function doIfPlayerTurn(f: Function): void {
     if (currentPlayer === playerId) {
@@ -65,7 +84,7 @@ function App() {
   const playerSequenceElements: JSX.Element[] = playerSequences
     .map(sequence => <Sequence
         key={sequence.id} id={sequence.id} cards={sequence.cards} selectionColor={sequence.selectionColor}
-        onClick={(selectionObject: HandMovementType) => doIfPlayerTurn(() => dispatch(moveSelectedHandToSequence({ ...selectionObject, playerId })))}/>);
+        onClick={(selectionObject: { sequenceId: string, cardId: string }) => doIfPlayerTurn(() => dispatch(moveSelectedHandToSequence({ ...selectionObject, playerId })))}/>);
   const opponentSequences = sequences.filter(sequence => !sequence.playerTeam);
   const opponentSequenceElements: JSX.Element[] = opponentSequences
     .map(sequence => <Sequence
@@ -74,7 +93,7 @@ function App() {
     <div className="App" style={{ display: 'flex', flex: 1 }}>
       <div className="col" style={{ display: 'flex', flex: 1 }}>
         <div className="row" style={{ display: 'flex' }}>
-          <div onClick={() => doIfPlayerTurn(() => dispatch(pickCard(playerId)))} className="row" style={{ display: 'flex' }}>
+          <div className="row" style={{ display: 'flex' }}>
             <Deck type='REGULAR' remainingCards={cards}/>
           </div>
           {discardPileJsx}
@@ -101,8 +120,9 @@ function App() {
               players.map(player => {
                 const showBack = playerId !== player.id;
                 const showTurn = currentPlayer === player.id;
+                const backgroundColor = showTurn ? { backgroundColor: 'green' } : {};
                 return <div key={`${player.id}-hand-wrapper`} className="row" style={{ display: 'flex' }}>
-                  {showTurn && <div key={`${player.id}-hand-marker`} style={{ width: 10, marginTop: 20, height: '100%', backgroundColor: 'green' }}/>}
+                  <div key={`${player.id}-hand-marker`} style={{ width: 10, marginTop: 20, height: '100%', ...backgroundColor }}/>
                   <Hand key={`${player.id}-hand`} cards={player.hand} showBack={showBack} onClickCard={(cardId: string) => doIfPlayerTurn(() => dispatch(selectCardInHand({ playerId: player.id, cardId })))}/>
                 </div>;
               })

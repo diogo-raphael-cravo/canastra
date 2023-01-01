@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { WritableDraft } from 'immer/dist/internal';
 import { v4 } from 'uuid';
 
 import Decks, { CardType, isTriple, isSequence, getSequence } from '../../cards/helpers/Decks'
@@ -7,7 +8,7 @@ import type { RootState } from '../../Store';
 export const SEQUENCE_TYPE_ANY = 'any';
 export const SEQUENCE_TYPE_TRIPLE = 'triple';
 export const SEQUENCE_TYPE_SEQUENCE = 'sequence';
-type SequenceType = {
+export type SequenceType = {
     id: string,
     type: string,
     cards: CardType[],
@@ -59,13 +60,24 @@ function getEmptySequence(sequences: SequenceType[]): SequenceType {
 
 export type HandMovementType = {
     playerId: string,
-    sequenceId: string,
-    cardId: string,
+    sequenceId: string | null,
 };
 export type HandSelectionType = {
     playerId: string,
     cardId: string,
 };
+function doPickCard(state: WritableDraft<GameSliceState>, playerId: string) {
+    if (0 === state.deck.length) {
+        throw new Error('cannot pick when deck is empty');
+    }
+    const card = state.deck[state.deck.length - 1];
+    state.deck = state.deck.slice(0, state.deck.length - 1);
+    const player = state.players.find(player => player.id === playerId);
+    if (!player) {
+        throw new Error(`could not find player with id ${playerId}`);
+    }
+    player.hand = [...player.hand, card];
+}
 export const gameSlice = createSlice({
   name: 'gameSlice',
   // `createSlice` will infer the state type from the `initialState` argument
@@ -83,6 +95,7 @@ export const gameSlice = createSlice({
             playerTeam: true,
         });
         state.playerId = state.players[0].id;
+        doPickCard(state, state.playerId);
         state.currentPlayer = state.players[0].id;
         const playerCount = action.payload;
         for (let i = 1; i < playerCount; i++) {
@@ -96,17 +109,7 @@ export const gameSlice = createSlice({
         state.deck = state.deck.slice(cardCountPerPlayer * playerCount, state.deck.length);
     },
     pickCard: (state, action: PayloadAction<string>) => {
-        if (0 === state.deck.length) {
-            throw new Error('cannot pick when deck is empty');
-        }
-        const card = state.deck[state.deck.length - 1];
-        state.deck = state.deck.slice(0, state.deck.length - 1);
-        const playerId = action.payload;
-        const player = state.players.find(player => player.id === playerId);
-        if (!player) {
-            throw new Error(`could not find player with id ${playerId}`);
-        }
-        player.hand = [...player.hand, card];
+        doPickCard(state, action.payload);
     },
     // TODO: do not highlight when two joekrs
     selectCardInHand: (state, action: PayloadAction<HandSelectionType>) => {
@@ -186,7 +189,20 @@ export const gameSlice = createSlice({
         if (!player) {
             throw new Error(`could not find player with id ${action.payload.playerId}`);
         }
-        const selectedSequence = state.sequences.find(sequence => sequence.id === action.payload.sequenceId);
+
+        let selectedSequence: SequenceType | undefined;
+        if (null === action.payload.sequenceId) {
+            selectedSequence = {
+                id: v4(),
+                type: SEQUENCE_TYPE_ANY,
+                cards: [],
+                selectionColor: '',
+                playerTeam: player.playerTeam,
+            };
+            state.sequences.push(selectedSequence);
+        } else {
+            selectedSequence = state.sequences.find(sequence => sequence.id === action.payload.sequenceId);
+        }
         if (!selectedSequence) {
             throw new Error(`could not find sequence ${action.payload.sequenceId}`);
         }
@@ -208,13 +224,15 @@ export const gameSlice = createSlice({
             if (isSequence(selectedCards)) {
                 selectedSequence.type = SEQUENCE_TYPE_SEQUENCE;
             }
-            state.sequences.push({
-                id: v4(),
-                type: SEQUENCE_TYPE_ANY,
-                cards: [],
-                selectionColor: '',
-                playerTeam: true,
-            });
+            if (player.playerTeam) {
+                state.sequences.push({
+                    id: v4(),
+                    type: SEQUENCE_TYPE_ANY,
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: true,
+                });
+            }
         }
 
         player.hand = player.hand.filter(card => !card.selectionColor);
@@ -251,6 +269,10 @@ export const gameSlice = createSlice({
             state.currentPlayer = state.players[0].id;
         } else {
             state.currentPlayer = state.players[currentPlayerIndex + 1].id;
+        }
+
+        if (state.currentPlayer === state.playerId) {
+            doPickCard(state, state.playerId);
         }
     }
   },
