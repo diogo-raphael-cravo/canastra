@@ -104,7 +104,7 @@ export const gameSlice = createSlice({
             state.players.push({
                 id: v4(),
                 hand: state.deck.slice(initialCardIndex, initialCardIndex + cardCountPerPlayer),
-                playerTeam: false, // TODO: alternate teams
+                playerTeam: i % 2 === 0,
             });
         }
         state.deck = state.deck.slice(cardCountPerPlayer * playerCount, state.deck.length);
@@ -213,14 +213,18 @@ export const gameSlice = createSlice({
 
         let selectedSequence: SequenceType | undefined;
         if (null === action.payload) {
-            selectedSequence = {
-                id: v4(),
-                type: SEQUENCE_TYPE_ANY,
-                cards: [],
-                selectionColor: '',
-                playerTeam: player.playerTeam,
-            };
-            state.sequences.push(selectedSequence);
+            if (!player.playerTeam) {
+                selectedSequence = {
+                    id: v4(),
+                    type: SEQUENCE_TYPE_ANY,
+                    cards: [],
+                    selectionColor: '',
+                    playerTeam: player.playerTeam,
+                };
+                state.sequences.push(selectedSequence);
+            } else {
+                selectedSequence = getEmptySequence(state.sequences);
+            }
         } else {
             selectedSequence = state.sequences.find(sequence => sequence.id === action.payload);
         }

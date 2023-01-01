@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { v4 } from 'uuid';
 
-import { Radio, Modal, Button } from 'antd';
+import { Radio, Modal, Button, Descriptions } from 'antd';
 
 import { useAppSelector, useAppDispatch } from '../Hooks';
 
@@ -90,26 +90,28 @@ function CanastaScore() {
               Ok
             </Button>]}>
             <div className="col" style={{ display: 'flex', flex: 1 }}>
-                <Radio.Group value={showPlayerScore} onChange={(e) => setShowPlayerScore(e.target.value)}>
+                <Radio.Group style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} value={showPlayerScore} onChange={(e) => setShowPlayerScore(e.target.value)}>
                     <Radio.Button value={true}>Próprio / own score</Radio.Button>
                     <Radio.Button value={false}>Opponent score</Radio.Button>
                 </Radio.Group>
-                Batida / go out: {score.goOutScore}
-                <br/>
-                Mãos / hands: {score.handPenalty}
-                <br/>
-                Sequências / sequences: 
-                {score.sequences.map(sequence => {
-                    return <div key={v4()}>
-                        <br/>
-                        Sequência / sequence: {sequence.sequenceScore}
-                        <br/>
-                        Cartas / cards: {sequence.sequenceCardsScore}
-                        <br/>
-                    </div>;
-                })}
-                <br/>
-                Total: {getTotalScore(score)}
+                <div style={{ marginTop: 20 }}>
+                    Batida / go out: {score.goOutScore}
+                    <br/>
+                    Mãos / hands: {score.handPenalty}
+                    <br/>
+                    Sequências / sequences: 
+                    {score.sequences.map(sequence => {
+                        return <div key={v4()}>
+                            <br/>
+                            Sequência / sequence: {sequence.sequenceScore}
+                            <br/>
+                            Cartas / cards: {sequence.sequenceCardsScore}
+                            <br/>
+                        </div>;
+                    })}
+                    <br/>
+                    Total: {getTotalScore(score)}
+                </div>
             </div>
         </Modal>
     );

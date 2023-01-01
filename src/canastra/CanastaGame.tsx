@@ -60,7 +60,7 @@ function CanastaGame() {
   }, [gameStarted, currentPlayer, loading, dispatch, playerId, players, sequences, discardPile.cards]);
 
   if (!gameStarted) {
-    dispatch(startGame(2));
+    dispatch(startGame(4));
     return <div/>;
   }
 
@@ -113,7 +113,7 @@ function CanastaGame() {
           {discardPileJsx}
         </div>
         <div className="row" style={{ display: 'flex' }}>
-          <div className="col" style={{ display: 'flex', width: '50%' }}>
+          <div className="col" style={{ display: 'flex', minWidth: '50%' }}>
             <div className="row" style={{ display: 'flex' }}>
               {playerSequenceElements}
             </div>
