@@ -100,7 +100,7 @@ function CanastaGame() {
     .map(sequence => <Sequence
         key={sequence.id} id={sequence.id} cards={sequence.cards} selectionColor={sequence.selectionColor}/>);
   return (
-    <div className="App" style={{ display: 'flex', flex: 1 }}>
+    <div style={{ display: 'flex', flex: 1 }}>
       <div className="col" style={{ display: 'flex', flex: 1 }}>
         <div className="row" style={{ display: 'flex' }}>
           <div onClick={() => doIfPlayerTurn(() => dispatch(pickCard()))} className="row" style={{ display: 'flex' }}>

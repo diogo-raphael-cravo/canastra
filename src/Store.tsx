@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import GameSlice from './canastra/slices/GameSlice';
+import CanastaScoreSlice from './canastra/slices/CanastaScoreSlice';
 
 export const store = configureStore({
   reducer: {
     gameSlice: GameSlice,
+    canastaScoreSlice: CanastaScoreSlice,
   }
 });
 
