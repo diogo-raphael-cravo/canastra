@@ -15,7 +15,7 @@ export type SequenceType = {
     selectionColor: string,
     playerTeam: boolean,
 };
-type PlayerType = {
+export type PlayerType = {
     id: string,
     hand: CardType[],
     playerTeam: boolean,
@@ -30,6 +30,7 @@ export interface GameSliceState {
   currentPlayer: string,
   loading: boolean,
   pickedCard: boolean,
+  goOutPlayer: string | null,
 };
 
 const initialState: GameSliceState = {
@@ -53,6 +54,7 @@ const initialState: GameSliceState = {
     currentPlayer: '',
     loading: false,
     pickedCard: false,
+    goOutPlayer: null,
 };
 
 function getEmptySequence(sequences: SequenceType[]): SequenceType {
@@ -106,8 +108,12 @@ export const gameSlice = createSlice({
             });
         }
         state.deck = state.deck.slice(cardCountPerPlayer * playerCount, state.deck.length);
+        state.goOutPlayer = null;
     },
     pickCard: (state) => {
+        if (null !== state.goOutPlayer) {
+            return;
+        }
         if (state.currentPlayer === state.playerId) {
             if (state.pickedCard) {
                 return;
@@ -118,6 +124,9 @@ export const gameSlice = createSlice({
     },
     // TODO: do not highlight when two joekrs
     selectCardInHand: (state, action: PayloadAction<string>) => {
+        if (null !== state.goOutPlayer) {
+            return;
+        }
         if (state.currentPlayer === state.playerId && !state.pickedCard) {
             return;
         }
@@ -194,6 +203,9 @@ export const gameSlice = createSlice({
         });
     },
     moveSelectedHandToSequence: (state, action: PayloadAction<string | null>) => {
+        if (null !== state.goOutPlayer) {
+            return;
+        }
         const player = state.players.find(player => player.id === state.currentPlayer);
         if (!player) {
             throw new Error(`could not find player with id ${state.currentPlayer}`);
@@ -255,8 +267,15 @@ export const gameSlice = createSlice({
         }
 
         state.discardPile.selectionColor = '';
+
+        if (0 === player.hand.length) {
+            state.goOutPlayer = player.id;
+        }
     },
     discardCard: (state) => {
+        if (null !== state.goOutPlayer) {
+            return;
+        }
         const player = state.players.find(player => player.id === state.currentPlayer);
         if (!player) {
             throw new Error(`could not find player with id ${state.currentPlayer}`);
@@ -276,6 +295,11 @@ export const gameSlice = createSlice({
         if (state.currentPlayer === state.playerId) {
             state.pickedCard = false;
         }
+        
+        if (0 === player.hand.length) {
+            state.goOutPlayer = player.id;
+            return;
+        }
 
         const currentPlayerIndex = state.players.findIndex(player => player.id === state.currentPlayer);
         if (state.players.length - 1 === currentPlayerIndex) {
@@ -283,8 +307,12 @@ export const gameSlice = createSlice({
         } else {
             state.currentPlayer = state.players[currentPlayerIndex + 1].id;
         }
+        
     },
     pickDiscarded: (state) => {
+        if (null !== state.goOutPlayer) {
+            return;
+        }
         if (0 === state.discardPile.cards.length) {
             return;
         }
@@ -317,5 +345,6 @@ export const selectPlayers = (state: RootState) => state.gameSlice.players;
 export const selectPlayerId = (state: RootState) => state.gameSlice.playerId;
 export const selectCurrentPlayer = (state: RootState) => state.gameSlice.currentPlayer;
 export const selectLoading = (state: RootState) => state.gameSlice.loading;
+export const selectGoOutPlayer = (state: RootState) => state.gameSlice.goOutPlayer;
 
 export default gameSlice.reducer;

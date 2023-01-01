@@ -23,6 +23,7 @@ test('should return the initial state', () => {
         currentPlayer: '',
         loading: false,
         pickedCard: false,
+        goOutPlayer: null,
     });
 });
 
@@ -47,6 +48,7 @@ describe('pickCard', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         };
         
         expect(() => reducer(previousState, pickCard())).toThrow('cannot pick when deck is empty');
@@ -83,6 +85,7 @@ describe('pickCard', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         };
         
         expect(reducer(previousState, pickCard())).toEqual({
@@ -116,6 +119,7 @@ describe('pickCard', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: true,
+            goOutPlayer: null,
         });
     });
 });
@@ -141,6 +145,7 @@ describe('selectCardInHand', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: true,
+            goOutPlayer: null,
         };
         
         expect(() => reducer(previousState, selectCardInHand('notinhand')))
@@ -191,6 +196,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('c'))).toEqual({
@@ -237,6 +243,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
         test('should remove highlight when more than a triple is selected', () => {
@@ -284,6 +291,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('d'))).toEqual({
@@ -331,6 +339,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
         test('should highlight triple again when extra card is deselected', () => {
@@ -379,6 +388,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('d'))).toEqual({
@@ -426,6 +436,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
         test('should highlight sequence of type triple when matching card is selected', () => {
@@ -477,6 +488,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -530,6 +542,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
         test('should remove highlight of sequence of type triple when matching card is deselected', () => {
@@ -584,6 +597,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -637,6 +651,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
     });
@@ -685,6 +700,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('c'))).toEqual({
@@ -731,6 +747,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
         test('should remove highlight when more than a sequence is selected', () => {
@@ -778,6 +795,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('d'))).toEqual({
@@ -825,6 +843,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
         test('should highlight sequence again when extra card is deselected', () => {
@@ -873,6 +892,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('d'))).toEqual({
@@ -920,6 +940,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
         test('should highlight sequence of type sequence when matching card is selected (lower bound and 2 as joker)', () => {
@@ -971,6 +992,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -1024,6 +1046,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
         test('should highlight sequence of type sequence when matching card is selected (lower bound)', () => {
@@ -1075,6 +1098,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -1128,6 +1152,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
         test('should remove highlight of sequence of type sequence when matching card is deselected', () => {
@@ -1182,6 +1207,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -1235,6 +1261,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
         test('should highlight sequence of type sequence when matching card is selected (upper bound)', () => {
@@ -1286,6 +1313,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             };
             
             expect(reducer(previousState, selectCardInHand('a'))).toEqual({
@@ -1339,6 +1367,7 @@ describe('selectCardInHand', () => {
                 currentPlayer: 'playerid',
                 loading: false,
                 pickedCard: true,
+                goOutPlayer: null,
             });
         });
     });
@@ -1365,6 +1394,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         };
         
         expect(() => reducer(previousState, moveSelectedHandToSequence('notavailable')))
@@ -1415,6 +1445,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence('mockid'))).toEqual({
@@ -1461,6 +1492,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         });
     });
     test('should set sequence type to triple when moving triple to empty sequence', () => {
@@ -1509,6 +1541,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence('mockid'))).toEqual({
@@ -1562,6 +1595,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         });
     });
     test('should move a single card to a sequence of type triple', () => {
@@ -1603,6 +1637,11 @@ describe('moveSelectedHandToSequence', () => {
                     name: 'A',
                     suit: 'spades',
                     selectionColor: 'lightgreen',
+                }, {
+                    id: 'e',
+                    name: 'A',
+                    suit: 'diamonds',
+                    selectionColor: '',
                 }],
                 playerTeam: true,
             }],
@@ -1616,6 +1655,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence('tripleid'))).toEqual({
@@ -1656,7 +1696,12 @@ describe('moveSelectedHandToSequence', () => {
             playerId: 'playerid',
             players: [{
                 id: 'playerid',
-                hand: [],
+                hand: [{
+                    id: 'e',
+                    name: 'A',
+                    suit: 'diamonds',
+                    selectionColor: '',
+                }],
                 playerTeam: true,
             }],
             discardPile: {
@@ -1669,6 +1714,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         });
     });
     test('should set sequence type to sequence when moving sequence to empty sequence', () => {
@@ -1717,6 +1763,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence('mockid'))).toEqual({
@@ -1770,6 +1817,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         });
     });
     test('should move a single card to a sequence of type sequence (upper bound)', () => {
@@ -1811,6 +1859,11 @@ describe('moveSelectedHandToSequence', () => {
                     name: '4',
                     suit: 'hearts',
                     selectionColor: 'lightgreen',
+                }, {
+                    id: 'e',
+                    name: '4',
+                    suit: 'spades',
+                    selectionColor: '',
                 }],
                 playerTeam: true,
             }],
@@ -1824,6 +1877,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence('sequenceid'))).toEqual({
@@ -1864,7 +1918,12 @@ describe('moveSelectedHandToSequence', () => {
             playerId: 'playerid',
             players: [{
                 id: 'playerid',
-                hand: [],
+                hand: [{
+                    id: 'e',
+                    name: '4',
+                    suit: 'spades',
+                    selectionColor: '',
+                }],
                 playerTeam: true,
             }],
             discardPile: {
@@ -1877,6 +1936,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         });
     });
     test('should move a single card to a sequence of type sequence (lower bound)', () => {
@@ -1918,6 +1978,11 @@ describe('moveSelectedHandToSequence', () => {
                     name: 'A',
                     suit: 'hearts',
                     selectionColor: 'lightgreen',
+                }, {
+                    id: 'e',
+                    name: 'A',
+                    suit: 'diamonds',
+                    selectionColor: '',
                 }],
                 playerTeam: true,
             }],
@@ -1931,6 +1996,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         };
         
         expect(reducer(previousState, moveSelectedHandToSequence('sequenceid'))).toEqual({
@@ -1971,7 +2037,12 @@ describe('moveSelectedHandToSequence', () => {
             playerId: 'playerid',
             players: [{
                 id: 'playerid',
-                hand: [],
+                hand: [{
+                    id: 'e',
+                    name: 'A',
+                    suit: 'diamonds',
+                    selectionColor: '',
+                }],
                 playerTeam: true,
             }],
             discardPile: {
@@ -1984,6 +2055,7 @@ describe('moveSelectedHandToSequence', () => {
             currentPlayer: 'playerid',
             loading: false,
             pickedCard: false,
+            goOutPlayer: null,
         });
     });
 });
